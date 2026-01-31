@@ -94,14 +94,6 @@ body.night {
   letter-spacing: 0.05em;
 }
 
-#top-header p {
-  margin: 6px 0 0;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.95);
-  text-shadow: 1px 1px 0 #000;
-}
 
 /* ===== Ground Form Section ===== */
 #ground-form {
@@ -634,17 +626,17 @@ body.night #ground-container::before {
 }
 
 /* ===== Pixel Fruits ===== */
-/* Pixel Apple - Flat Dot Style */
+/* Pixel Apple - Square Blocky Style */
 .fruit {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   font-weight: 800;
   color: #fff;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
@@ -652,8 +644,14 @@ body.night #ground-container::before {
   animation: pixelAppleFloat 1.5s steps(4) infinite;
   white-space: nowrap;
   background: #fc0000;
-  border-radius: 50%;
   image-rendering: pixelated;
+  /* Blocky pixel shape */
+  clip-path: polygon(
+    4px 0, calc(100% - 4px) 0,
+    100% 4px, 100% calc(100% - 4px),
+    calc(100% - 4px) 100%, 4px 100%,
+    0 calc(100% - 4px), 0 4px
+  );
 }
 
 /* Pixel stem */
@@ -664,20 +662,20 @@ body.night #ground-container::before {
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
-  height: 5px;
-  background: #8b4513;
+  height: 4px;
+  background: #603000;
 }
 
 /* Pixel leaf */
 .fruit::after {
   content: '';
   position: absolute;
-  top: -3px;
-  left: 60%;
-  width: 6px;
+  top: -4px;
+  left: 55%;
+  width: 8px;
   height: 4px;
   background: #00a800;
-  border-radius: 0 50% 50% 0;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
 }
 
 /* Different flat apple colors - Mario palette */
@@ -796,10 +794,6 @@ button[type="submit"]:disabled {
 @media (max-width: 600px) {
   #top-header h1 {
     font-size: 1.4rem;
-  }
-
-  #top-header p {
-    font-size: 0.85rem;
   }
 
   #message-form {
@@ -1286,4 +1280,217 @@ button[type="submit"]:disabled {
 @keyframes zzz {
   0%, 100% { opacity: 1; transform: translateY(0); }
   50% { opacity: 0.5; transform: translateY(-4px); }
+}
+
+/* ===== Hanwha Eagles Baseball Player ===== */
+#baseball-player {
+  position: fixed;
+  bottom: 78px;
+  width: 28px;
+  height: 36px;
+  z-index: 360;
+  visibility: hidden;
+  image-rendering: pixelated;
+}
+
+#baseball-player.visible {
+  visibility: visible;
+}
+
+/* Player head */
+.eagles-player .player-head {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: 12px;
+  height: 10px;
+  background: #ffd0a0;
+  /* Pixel face shape */
+  clip-path: polygon(2px 0, 10px 0, 12px 2px, 12px 10px, 0 10px, 0 2px);
+}
+
+/* Eagles cap (orange with black) */
+.eagles-player .player-head::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  width: 16px;
+  height: 6px;
+  background: #ff6600;
+  clip-path: polygon(0 4px, 4px 0, 12px 0, 16px 4px, 16px 6px, 0 6px);
+}
+
+/* Eyes */
+.eagles-player .player-head::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  width: 2px;
+  height: 2px;
+  background: #000;
+  box-shadow: 6px 0 0 #000;
+}
+
+/* Player body - Eagles orange uniform */
+.eagles-player .player-body {
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  width: 16px;
+  height: 14px;
+  background: #ff6600;
+  clip-path: polygon(2px 0, 14px 0, 16px 4px, 16px 14px, 0 14px, 0 4px);
+}
+
+/* Uniform number/stripes */
+.eagles-player .player-body::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 4px;
+  height: 6px;
+  background: #fff;
+}
+
+/* Player arm with bat swing animation */
+.eagles-player .player-arm {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  width: 8px;
+  height: 4px;
+  background: #ffd0a0;
+  transform-origin: left center;
+}
+
+/* Baseball bat */
+.eagles-player .player-bat {
+  position: absolute;
+  top: 6px;
+  left: 24px;
+  width: 4px;
+  height: 20px;
+  background: #8b4513;
+  transform-origin: bottom center;
+}
+
+.eagles-player .player-bat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 6px;
+  height: 6px;
+  background: #a0522d;
+}
+
+/* Player legs */
+.eagles-player .player-legs {
+  position: absolute;
+  top: 24px;
+  left: 8px;
+  width: 5px;
+  height: 12px;
+  background: #fff;
+  box-shadow: 7px 0 0 #fff;
+}
+
+/* Shoes */
+.eagles-player .player-legs::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  width: 6px;
+  height: 3px;
+  background: #000;
+  box-shadow: 7px 0 0 #000;
+}
+
+/* Bat swing animation */
+#baseball-player.swinging .player-bat {
+  animation: batSwing 0.5s steps(4) infinite;
+}
+
+#baseball-player.swinging .player-arm {
+  animation: armSwing 0.5s steps(4) infinite;
+}
+
+@keyframes batSwing {
+  0% { transform: rotate(-45deg); }
+  25% { transform: rotate(-20deg); }
+  50% { transform: rotate(30deg); }
+  75% { transform: rotate(60deg); }
+  100% { transform: rotate(-45deg); }
+}
+
+@keyframes armSwing {
+  0% { transform: rotate(-20deg); }
+  50% { transform: rotate(20deg); }
+  100% { transform: rotate(-20deg); }
+}
+
+/* Tired animation */
+#baseball-player.tired .player-head::after {
+  /* Closed eyes - line instead of dots */
+  height: 1px;
+  top: 5px;
+}
+
+#baseball-player.tired .player-body {
+  animation: tiredBreathe 1s steps(2) infinite;
+}
+
+@keyframes tiredBreathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(1px); }
+}
+
+/* Sweat drops */
+#baseball-player.tired::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 22px;
+  width: 3px;
+  height: 4px;
+  background: #87ceeb;
+  border-radius: 0 0 50% 50%;
+  animation: sweatDrop 0.8s steps(3) infinite;
+}
+
+@keyframes sweatDrop {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(8px); }
+}
+
+/* Walking animation */
+#baseball-player.walking {
+  animation: playerWalk 12s linear forwards;
+}
+
+#baseball-player.walking.reverse {
+  animation: playerWalkReverse 12s linear forwards;
+}
+
+#baseball-player.walking .player-legs {
+  animation: legsWalk 0.4s steps(2) infinite;
+}
+
+@keyframes playerWalk {
+  0% { left: -40px; }
+  100% { left: 45%; }
+}
+
+@keyframes playerWalkReverse {
+  0% { left: 45%; transform: scaleX(-1); }
+  100% { left: calc(100% + 40px); transform: scaleX(-1); }
+}
+
+@keyframes legsWalk {
+  0%, 100% { transform: skewX(-5deg); }
+  50% { transform: skewX(5deg); }
 }
