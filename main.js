@@ -242,9 +242,11 @@ function animateBaseballPlayer() {
   // Step 1: Walk in
   baseballPlayer.classList.add('visible', 'walking');
 
-  // Step 2: After walking in (12s), start swinging
+  // Step 2: After walking in (10s), start swinging
   setTimeout(() => {
     baseballPlayer.classList.remove('walking');
+    // Set position explicitly for swinging
+    baseballPlayer.style.left = 'calc(50% - 14px)';
     baseballPlayer.classList.add('swinging');
 
     // Step 3: After swinging (5-8s), get tired
@@ -257,18 +259,20 @@ function animateBaseballPlayer() {
       const tiredDuration = 3000 + Math.random() * 1000;
       setTimeout(() => {
         baseballPlayer.classList.remove('tired');
+        baseballPlayer.style.left = 'calc(50% - 14px)';
         baseballPlayer.classList.add('walking', 'reverse');
 
-        // Step 5: After walking away (12s), schedule next appearance
+        // Step 5: After walking away (10s), schedule next appearance
         setTimeout(() => {
           resetPlayerClasses();
+          baseballPlayer.style.left = '-40px';
           // Random delay before next appearance (60-120 seconds)
           setTimeout(animateBaseballPlayer, 60000 + Math.random() * 60000);
-        }, 12000);
+        }, 10000);
 
       }, tiredDuration);
     }, swingDuration);
-  }, 12000);
+  }, 10000);
 }
 
 // Start baseball player with initial delay (30-60 seconds)

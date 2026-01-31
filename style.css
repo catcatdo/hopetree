@@ -1494,28 +1494,49 @@ button[type="submit"]:disabled {
 
 /* Walking animation */
 #baseball-player.walking {
-  animation: playerWalk 12s linear forwards;
+  animation: playerWalk 10s linear forwards;
 }
 
 #baseball-player.walking.reverse {
-  animation: playerWalkReverse 12s linear forwards;
+  animation: playerWalkReverse 10s linear forwards;
+  transform: scaleX(-1);
 }
 
 #baseball-player.walking .player-legs {
-  animation: legsWalk 0.4s steps(2) infinite;
+  animation: legsWalk 0.3s steps(2) infinite;
+}
+
+/* Swinging position - stay at center */
+#baseball-player.swinging,
+#baseball-player.tired {
+  left: calc(50% - 14px);
 }
 
 @keyframes playerWalk {
   0% { left: -40px; }
-  100% { left: 45%; }
+  100% { left: calc(50% - 14px); }
 }
 
 @keyframes playerWalkReverse {
-  0% { left: 45%; transform: scaleX(-1); }
-  100% { left: calc(100% + 40px); transform: scaleX(-1); }
+  0% { left: calc(50% - 14px); }
+  100% { left: calc(100% + 40px); }
 }
 
 @keyframes legsWalk {
-  0%, 100% { transform: skewX(-5deg); }
-  50% { transform: skewX(5deg); }
+  0%, 100% {
+    transform: translateX(0);
+    box-shadow: 7px 0 0 #fff;
+  }
+  25% {
+    transform: translateX(-2px);
+    box-shadow: 9px 0 0 #fff;
+  }
+  50% {
+    transform: translateX(0);
+    box-shadow: 7px 0 0 #fff;
+  }
+  75% {
+    transform: translateX(2px);
+    box-shadow: 5px 0 0 #fff;
+  }
 }
