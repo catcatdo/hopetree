@@ -46,27 +46,32 @@ function updateTreeGrowth(count) {
 }
 
 function getRandomPositionInFoliage() {
-  // Triangle Shape Logic (Christmas Tree)
-  // We need to place items within the triangle defined by:
-  // (50, 0) - Top Center
-  // (0, 100) - Bottom Left
-  // (100, 100) - Bottom Right
+  // Stepped Pyramid Logic for Pixel Art Tree
+  // The CSS clip-path defines 3 main tiers:
+  // Tier 1 (Top): Y=0-20%, X=40-60%
+  // Tier 2 (Mid): Y=20-40%, X=20-80%
+  // Tier 3 (Bot): Y=40-100%, X=5-95% (Keep some margin from edge)
+
+  const r = Math.random();
+  let y, minX, maxX;
+
+  if (r < 0.2) { 
+    // Top Tier (20% chance)
+    y = Math.random() * 20; 
+    minX = 42; maxX = 58;
+  } else if (r < 0.5) { 
+    // Mid Tier (30% chance)
+    y = 20 + Math.random() * 20;
+    minX = 22; maxX = 78;
+  } else {
+    // Bottom Tier (50% chance)
+    y = 40 + Math.random() * 55; // Up to 95%
+    minX = 5; maxX = 95;
+  }
+
+  const x = minX + Math.random() * (maxX - minX);
   
-  // 1. Pick a random vertical position (top)
-  // Avoid the very top (0-15%) where it's too narrow
-  const top = 15 + Math.random() * 75; // 15% to 90%
-  
-  // 2. Calculate available width at this height
-  // In a triangle, width increases linearly from top to bottom.
-  // At top=0, width factor is 0. At top=100, width factor is 1.
-  // We want x to be centered around 50%.
-  
-  // Spread factor increases as we go down (increase top value)
-  const spread = (top / 100) * 45; // Max +/- 45% from center to keep some margin
-  
-  const x = 50 + (Math.random() * (spread * 2) - spread);
-  
-  return { x, y: top };
+  return { x, y };
 }
 
 function renderFruit(doc) {
