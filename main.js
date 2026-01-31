@@ -46,9 +46,27 @@ function updateTreeGrowth(count) {
 }
 
 function getRandomPositionInFoliage() {
-  const x = Math.random() * 80 - 40; // -40% to 40%
-  const y = Math.random() * 80 - 40; 
-  return { x: 50 + x, y: 50 + y }; // Percentages centered at 50,50
+  // Triangle Shape Logic (Christmas Tree)
+  // We need to place items within the triangle defined by:
+  // (50, 0) - Top Center
+  // (0, 100) - Bottom Left
+  // (100, 100) - Bottom Right
+  
+  // 1. Pick a random vertical position (top)
+  // Avoid the very top (0-15%) where it's too narrow
+  const top = 15 + Math.random() * 75; // 15% to 90%
+  
+  // 2. Calculate available width at this height
+  // In a triangle, width increases linearly from top to bottom.
+  // At top=0, width factor is 0. At top=100, width factor is 1.
+  // We want x to be centered around 50%.
+  
+  // Spread factor increases as we go down (increase top value)
+  const spread = (top / 100) * 45; // Max +/- 45% from center to keep some margin
+  
+  const x = 50 + (Math.random() * (spread * 2) - spread);
+  
+  return { x, y: top };
 }
 
 function renderFruit(doc) {
