@@ -121,7 +121,7 @@ header p {
   background-size: 10px 100%, 100% 10px;
   
   position: absolute;
-  bottom: 0;
+  bottom: 60px; /* Lifted up to sit on ground */
   /* No border radius */
   z-index: 1;
   border: 4px solid #3e2723; /* Outline */
@@ -133,7 +133,8 @@ header p {
   /* Interpolate size */
   width: calc(160px + (640px - 160px) * var(--growth-factor));
   height: calc(200px + (800px - 200px) * var(--growth-factor));
-  bottom: calc(80px + (250px - 80px) * var(--growth-factor));
+  /* Adjust bottom to account for lifted trunk (80px + 60px trunk base = 140px approx start) */
+  bottom: calc(140px + (250px - 80px) * var(--growth-factor));
 
   background: #2e7d32;
   /* Pixel texture */
@@ -174,6 +175,7 @@ header p {
   background-color: #5d4037;
   z-index: 5;
   border-top: 4px solid #3e2723;
+  overflow: visible; /* Allow cat to stand on top */
 }
 
 /* CSS Pixel Art Character (Tamagotchi / Blob) */
@@ -181,9 +183,8 @@ header p {
   width: 10px;
   height: 10px;
   position: absolute;
-  bottom: 25px; /* Stand on ground */
+  bottom: 80px; /* Stand ON TOP of the 80px high ground */
   left: -20px;
-  animation: runCat 20s linear infinite;
   
   /* Pixel Art defined by Box Shadows */
   /* Base color: White, Eyes: Black */
@@ -217,7 +218,9 @@ header p {
 .pixel-char {
   /* Apply walking frame animation */
   animation: runCat 15s linear infinite, walkFrames 0.5s steps(1) infinite;
-  transform: scale(4); /* Make it big */
+  /* Scale 4x AND flip horizontally to face right */
+  transform: scale(4) scaleX(-1); 
+  transform-origin: bottom center;
 }
 
 
