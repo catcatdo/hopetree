@@ -12,7 +12,8 @@ body {
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  height: 100vh;
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Mobile viewport fix */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -162,22 +163,37 @@ header p {
   animation: swayFoliage 5s steps(10) infinite alternate;
 }
 
-/* Ground & Pixel Char */
+/* Ground & Grass (1px style) */
 #ground-container {
   position: absolute;
   bottom: 0px; 
   width: 100%;
-  height: 80px;
-  background-image: 
-    linear-gradient(#8b4513 50%, transparent 50%),
-    linear-gradient(90deg, #8b4513 50%, transparent 50%);
-  background-size: 40px 40px; /* Dirt blocks */
-  background-color: #5d4037;
+  height: 2px; /* 2px total height */
+  /* Top 1px Green, Bottom 1px Brown */
+  background: linear-gradient(to bottom, #4caf50 50%, #3e2723 50%);
   z-index: 5;
-  border-top: 4px solid #3e2723;
-  overflow: visible; /* Allow cat to stand on top */
+  border: none;
+  overflow: visible; 
 }
 
+/* Pixel Grass Tufts */
+#ground-container::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; /* Sit on top of ground */
+  left: 0;
+  width: 2px; /* Bigger pixels for visibility */
+  height: 2px;
+  color: #4caf50; /* Grass color */
+  /* Scattered pixels */
+  box-shadow: 
+    10vw 0, 11vw -2px, 
+    25vw 0, 26vw -2px, 
+    40vw 0,
+    55vw 0, 56vw -2px,
+    70vw 0, 71vw -2px,
+    85vw 0, 86vw -2px;
+}
 /* CSS Pixel Art Character (Tamagotchi / Blob) */
 .pixel-char {
   width: 10px;
@@ -240,21 +256,20 @@ header p {
   to { transform: rotate(2deg); }
 }
 
-/* Ribbons (Comments) - Pixel Style */
+/* Ribbons (Comments) - Mini Pixel Style */
 .fruit {
   position: absolute;
-  width: 24px;
-  height: 60px;
+  width: 16px; /* Smaller ribbon */
+  height: 40px;
   background-color: #ffeb3b; 
-  /* No border radius */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 5px;
-  font-size: 0.6rem; /* Smaller pixel font */
+  padding-top: 2px; 
+  font-size: 0.5rem; /* Tiny font */
   color: #5d4037;
-  z-index: 10;
+  z-index: 200; /* Above input section (z-100) */
   transform-origin: top center;
   animation: swayRibbon 3s steps(5) infinite alternate;
   writing-mode: vertical-rl; 
@@ -262,13 +277,13 @@ header p {
   overflow: hidden;
   white-space: nowrap;
   
-  border: 2px solid #000; /* Black outline */
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+  border: 1px solid #000; /* 1px border */
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.2);
 }
 
 .fruit:hover {
   transform: scale(1.1) rotate(0deg) !important; 
-  z-index: 20;
+  z-index: 210;
 }
 
 @keyframes swayRibbon {
