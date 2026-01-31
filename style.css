@@ -793,36 +793,61 @@ button[type="submit"]:disabled {
 /* ===== Responsive ===== */
 @media (max-width: 600px) {
   #top-header h1 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+  }
+
+  #ground-container {
+    height: 60px;
+  }
+
+  #ground-form {
+    padding: 0 8px 8px;
   }
 
   #message-form {
-    flex-wrap: wrap;
-    padding: 8px;
-    gap: 5px;
+    flex-wrap: nowrap;
+    padding: 6px 10px;
+    gap: 4px;
+    max-width: 100%;
   }
 
   #username {
-    width: 100%;
+    width: 50px;
+    padding: 6px 8px;
+    font-size: 0.7rem;
   }
 
   #usermessage {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    height: 28px;
+    font-size: 0.7rem;
   }
 
   button[type="submit"] {
-    width: 100%;
-    margin-top: 4px;
-  }
-
-  .fruit {
-    width: 24px;
-    height: 24px;
-    font-size: 0.5rem;
+    padding: 0 10px;
+    height: 28px;
+    font-size: 0.65rem;
   }
 
   .bush, .flower {
-    transform: scale(0.6);
+    bottom: 58px;
+  }
+
+  #cats-container {
+    bottom: 58px;
+  }
+
+  #baseball-player {
+    bottom: 58px;
+    transform: scale(0.85);
+  }
+
+  .fruit {
+    width: 20px;
+    height: 20px;
+    font-size: 0.45rem;
   }
 }
 
