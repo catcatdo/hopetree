@@ -59,8 +59,9 @@ header p {
   justify-content: center;
   align-items: flex-end; /* Root at bottom */
   transition: all 1s ease;
-  overflow: hidden; /* Keep clouds contained if needed, but usually strictly not for tree */
   overflow: visible;
+  /* 0 = Sapling, 1 = Full Grown (500 comments) */
+  --growth-factor: 0; 
 }
 
 /* Sky & Clouds */
@@ -114,30 +115,38 @@ header p {
   100% { transform: translateX(110vw); }
 }
 
-/* Tree Trunk - Simplified */
+/* Tree Trunk - Dynamic Size */
 .tree-trunk {
-  width: 20px;
-  height: 100px;
+  /* Interpolate from 20px to 100px width */
+  width: calc(20px + (100px - 20px) * var(--growth-factor));
+  /* Interpolate from 100px to 400px height */
+  height: calc(100px + (400px - 100px) * var(--growth-factor));
+  
   background-color: #8b5a2b; /* Simple brown */
   position: absolute;
   bottom: 0;
   border-radius: 5px;
-  transition: all 1s ease;
+  transition: width 1s ease, height 1s ease;
   z-index: 1;
   transform-origin: bottom center;
   animation: swayTrunk 4s ease-in-out infinite alternate;
 }
 
-/* Tree Foliage - Simplified & Animated */
+/* Tree Foliage - Dynamic Size */
 .tree-foliage {
-  width: 100px;
-  height: 100px;
+  /* Interpolate from 100px to 450px size */
+  width: calc(100px + (450px - 100px) * var(--growth-factor));
+  height: calc(100px + (450px - 100px) * var(--growth-factor));
+  
+  /* Adjust bottom position to stay on top of trunk */
+  /* Starts at 90px, ends around 380px */
+  bottom: calc(90px + (380px - 90px) * var(--growth-factor));
+
   background-color: var(--foliage-color-1);
   border-radius: 50%; /* Simple circle */
   position: absolute;
-  bottom: 90px;
-  transition: all 1s ease;
-  box-shadow: none; /* Removed complex shadow */
+  transition: width 1s ease, height 1s ease, bottom 1s ease;
+  box-shadow: none; 
   z-index: 2;
   transform-origin: center bottom;
   animation: swayFoliage 4s ease-in-out infinite alternate;
@@ -158,30 +167,6 @@ header p {
   from { transform: rotate(-2deg); }
   to { transform: rotate(2deg); }
 }
-
-/* Growth Stages */
-/* Stage 2 */
-.tree-stage-2 .tree-trunk {
-  width: 30px;
-  height: 160px;
-}
-.tree-stage-2 .tree-foliage {
-  width: 180px;
-  height: 180px;
-  bottom: 150px;
-}
-
-/* Stage 3 (Full Tree) */
-.tree-stage-3 .tree-trunk {
-  width: 50px;
-  height: 240px;
-}
-.tree-stage-3 .tree-foliage {
-  width: 280px;
-  height: 280px;
-  bottom: 230px;
-}
-
 
 /* Ribbons (Comments) */
 .fruit {

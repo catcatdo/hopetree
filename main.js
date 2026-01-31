@@ -36,14 +36,13 @@ const btn = form.querySelector('button');
 // --- Tree Logic ---
 
 function updateTreeGrowth(count) {
-  treeContainer.className = ''; // reset
-  if (count < 5) {
-    treeContainer.classList.add('tree-stage-1');
-  } else if (count < 15) {
-    treeContainer.classList.add('tree-stage-2');
-  } else {
-    treeContainer.classList.add('tree-stage-3');
-  }
+  // Max growth at 500 comments
+  const maxComments = 500;
+  // Calculate a value between 0 and 1
+  const growthFactor = Math.min(count / maxComments, 1);
+  
+  // Set CSS variable for dynamic sizing
+  treeContainer.style.setProperty('--growth-factor', growthFactor);
 }
 
 function getRandomPositionInFoliage() {
