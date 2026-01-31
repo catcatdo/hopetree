@@ -369,7 +369,7 @@ body.night .cloud {
 /* Pixel Bushes */
 .bush {
   position: absolute;
-  bottom: 68px;
+  bottom: 78px;
   width: 48px;
   height: 24px;
   background: var(--foliage-color);
@@ -411,7 +411,7 @@ body.night .bush {
 /* Pixel Flowers */
 .flower {
   position: absolute;
-  bottom: 72px;
+  bottom: 82px;
   width: 8px;
   height: 8px;
   background: #fc0000;
@@ -466,7 +466,7 @@ body.night .flower::before {
   height: calc(80px + 160px * var(--growth-factor));
   background: var(--trunk-color);
   position: absolute;
-  bottom: 60px;
+  bottom: 70px;
   z-index: 1;
   /* Pixel shading */
   box-shadow:
@@ -480,7 +480,7 @@ body.night .flower::before {
   --size: calc(120px + 200px * var(--growth-factor));
   width: var(--size);
   height: var(--size);
-  bottom: calc(130px + 140px * var(--growth-factor));
+  bottom: calc(140px + 140px * var(--growth-factor));
   position: absolute;
   z-index: 2;
   background: var(--foliage-color);
@@ -561,7 +561,7 @@ body.night .tree-foliage::after {
   /* Match foliage position and size */
   width: calc(120px + 200px * var(--growth-factor));
   height: calc(120px + 200px * var(--growth-factor));
-  bottom: calc(160px + 180px * var(--growth-factor));
+  bottom: calc(170px + 180px * var(--growth-factor));
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
@@ -578,7 +578,7 @@ body.night .tree-foliage::after {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 70px;
+  height: 80px;
   background: var(--ground-green);
   z-index: 300;
   /* Brick pattern */
@@ -589,7 +589,8 @@ body.night .tree-foliage::after {
     inset 0 -40px 0 var(--ground-brown),
     inset 0 -50px 0 var(--ground-dark),
     inset 0 -60px 0 var(--ground-dark),
-    inset 0 -70px 0 var(--ground-dark);
+    inset 0 -70px 0 var(--ground-dark),
+    inset 0 -80px 0 var(--ground-dark);
 }
 
 /* Grass top edge */
@@ -618,7 +619,8 @@ body.night #ground-container {
     inset 0 -40px 0 #402000,
     inset 0 -50px 0 #281000,
     inset 0 -60px 0 #281000,
-    inset 0 -70px 0 #281000;
+    inset 0 -70px 0 #281000,
+    inset 0 -80px 0 #281000;
 }
 
 body.night #ground-container::before {
@@ -632,94 +634,59 @@ body.night #ground-container::before {
 }
 
 /* ===== Pixel Fruits ===== */
-/* Pixel Apple - Mario Style */
+/* Pixel Apple - Flat Dot Style */
 .fruit {
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.5rem;
-  font-weight: 700;
-  color: #fcfcfc;
-  text-shadow: 1px 1px 0 #000;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
   z-index: 200;
   animation: pixelAppleFloat 1.5s steps(4) infinite;
   white-space: nowrap;
   background: #fc0000;
+  border-radius: 50%;
   image-rendering: pixelated;
-  /* Pixel apple shape */
-  clip-path: polygon(
-    35% 0%, 65% 0%,
-    65% 8%, 75% 8%,
-    100% 25%, 100% 75%,
-    85% 100%, 15% 100%,
-    0% 75%, 0% 25%,
-    25% 8%, 35% 8%
-  );
-  box-shadow:
-    inset 4px 4px 0 #fc6868,
-    inset -4px -4px 0 #a00000;
 }
 
 /* Pixel stem */
 .fruit::before {
   content: '';
   position: absolute;
-  top: -6px;
+  top: -4px;
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
-  height: 6px;
+  height: 5px;
   background: #8b4513;
-  box-shadow: inset 2px 0 0 #a0522d;
 }
 
 /* Pixel leaf */
 .fruit::after {
   content: '';
   position: absolute;
-  top: -4px;
-  left: 58%;
-  width: 8px;
-  height: 6px;
+  top: -3px;
+  left: 60%;
+  width: 6px;
+  height: 4px;
   background: #00a800;
-  clip-path: polygon(0% 100%, 50% 0%, 100% 50%, 50% 100%);
-  box-shadow: inset 2px 2px 0 #00fc00;
+  border-radius: 0 50% 50% 0;
 }
 
-/* Different pixel apple colors - Mario palette */
-.fruit:nth-child(6n+1) {
-  background: #fc0000;
-  box-shadow: inset 4px 4px 0 #fc6868, inset -4px -4px 0 #a00000;
-}
-.fruit:nth-child(6n+2) {
-  background: #00a800;
-  box-shadow: inset 4px 4px 0 #00fc00, inset -4px -4px 0 #006800;
-}
-.fruit:nth-child(6n+3) {
-  background: #fcfc00;
-  color: #383800;
-  text-shadow: none;
-  box-shadow: inset 4px 4px 0 #fcfc88, inset -4px -4px 0 #a0a000;
-}
-.fruit:nth-child(6n+4) {
-  background: #fc78fc;
-  box-shadow: inset 4px 4px 0 #fca8fc, inset -4px -4px 0 #a050a0;
-}
-.fruit:nth-child(6n+5) {
-  background: #00a800;
-  box-shadow: inset 4px 4px 0 #68fc68, inset -4px -4px 0 #005800;
-}
-.fruit:nth-child(6n+6) {
-  background: #fca800;
-  color: #502800;
-  text-shadow: none;
-  box-shadow: inset 4px 4px 0 #fcd868, inset -4px -4px 0 #a07000;
-}
+/* Different flat apple colors - Mario palette */
+.fruit:nth-child(6n+1) { background: #fc0000; }
+.fruit:nth-child(6n+2) { background: #00b800; }
+.fruit:nth-child(6n+3) { background: #e8d000; color: #000; text-shadow: none; }
+.fruit:nth-child(6n+4) { background: #fc68b8; }
+.fruit:nth-child(6n+5) { background: #00c850; }
+.fruit:nth-child(6n+6) { background: #fca000; color: #000; text-shadow: none; }
 
 .fruit:hover {
   transform: scale(1.3);
@@ -855,9 +822,9 @@ button[type="submit"]:disabled {
   }
 
   .fruit {
-    width: 20px;
-    height: 20px;
-    font-size: 0.4rem;
+    width: 24px;
+    height: 24px;
+    font-size: 0.5rem;
   }
 
   .bush, .flower {
@@ -1002,7 +969,7 @@ button[type="submit"]:disabled {
 /* ===== Pixel Cats ===== */
 #cats-container {
   position: fixed;
-  bottom: 68px;
+  bottom: 78px;
   left: 0;
   width: 100%;
   height: 40px;
