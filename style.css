@@ -469,10 +469,10 @@ body.night .flower::before {
 
 /* ===== Pixel Tree Foliage ===== */
 .tree-foliage {
-  --size: calc(120px + 200px * var(--growth-factor));
+  --size: calc(120px + 400px * var(--growth-factor));
   width: var(--size);
   height: var(--size);
-  bottom: calc(140px + 140px * var(--growth-factor));
+  bottom: calc(140px + 280px * var(--growth-factor));
   position: absolute;
   z-index: 2;
   background: var(--foliage-color);
@@ -551,9 +551,9 @@ body.night .tree-foliage::after {
 #fruits-container {
   position: absolute;
   /* Match foliage position and size */
-  width: calc(120px + 200px * var(--growth-factor));
-  height: calc(120px + 200px * var(--growth-factor));
-  bottom: calc(170px + 180px * var(--growth-factor));
+  width: calc(120px + 400px * var(--growth-factor));
+  height: calc(120px + 400px * var(--growth-factor));
+  bottom: calc(170px + 320px * var(--growth-factor));
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
