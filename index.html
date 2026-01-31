@@ -3,41 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>쾌유 기원 희망 나무</title>
-  <link href='./style.css' rel='stylesheet'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Dalgona/neodgm-webfont@1.521/neodgm/neodgm.css">
+  <title>희망 나무 - 쾌유를 기원합니다</title>
+  <link href="./style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
   <div id="app">
-    <header>
-      <h1>쾌유 기원 희망 나무</h1>
-      <p>누나의 빠른 쾌유를 위해 따뜻한 응원의 메시지를 달아주세요.</p>
-    </header>
-
-    <section id="input-section">
-      <form id="message-form">
-        <input type="text" id="username" placeholder="이름" required maxlength="10">
-        <textarea id="usermessage" placeholder="응원의 메시지를 남겨주세요 (짧을수록 예뻐요!)" required maxlength="50"></textarea>
-        <button type="submit">희망 열매 달기</button>
-      </form>
-    </section>
-
     <div id="sky-container">
+      <div id="celestial-body">
+        <div class="sun"></div>
+        <div class="moon"></div>
+      </div>
+      <div id="stars-container"></div>
       <div class="cloud c1"></div>
       <div class="cloud c2"></div>
       <div class="cloud c3"></div>
     </div>
 
-    <main id="tree-container" class="tree-stage-1">
-      <!-- The Tree Visual (CSS/SVG) will go here -->
+    <div id="decorations">
+      <div class="bush b1"></div>
+      <div class="bush b2"></div>
+      <div class="bush b3"></div>
+      <div class="flower f1"></div>
+      <div class="flower f2"></div>
+      <div class="flower f3"></div>
+      <div class="flower f4"></div>
+    </div>
+
+    <main id="tree-container">
       <div class="tree-trunk"></div>
       <div class="tree-foliage"></div>
-      
-      <!-- Fruits (Comments) will be injected here -->
       <div id="fruits-container"></div>
     </main>
-    
+
     <div id="ground-container"></div>
+
+    <div id="cats-container">
+      <div class="cat yellow-cat">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-face">
+          <div class="cat-eye left"></div>
+          <div class="cat-eye right"></div>
+        </div>
+        <div class="cat-body"></div>
+        <div class="cat-tail"></div>
+      </div>
+      <div class="cat black-cat">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-face">
+          <div class="cat-eye left"></div>
+          <div class="cat-eye right"></div>
+        </div>
+        <div class="cat-body"></div>
+        <div class="cat-tail"></div>
+      </div>
+    </div>
+
+    <header id="top-header">
+      <h1>희망 나무</h1>
+      <p>따뜻한 응원의 메시지를 남겨주세요</p>
+    </header>
+
+    <div id="ground-form">
+      <form id="message-form">
+        <input type="text" id="username" placeholder="이름" required maxlength="10">
+        <textarea id="usermessage" placeholder="응원 메시지" required maxlength="50"></textarea>
+        <button type="submit">메시지 달기</button>
+      </form>
+    </div>
   </div>
   <script type="module" src="./main.js"></script>
 </body>
