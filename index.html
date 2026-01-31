@@ -1,14 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <title>쾌유 기원 희망 나무</title>
   <link href='/style.css' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <div id="app">
+    <header>
+      <h1>쾌유 기원 희망 나무</h1>
+      <p>누나의 빠른 쾌유를 위해 따뜻한 응원의 메시지를 달아주세요.</p>
+    </header>
+
+    <main id="tree-container" class="tree-stage-1">
+      <!-- The Tree Visual (CSS/SVG) will go here -->
+      <div class="tree-trunk"></div>
+      <div class="tree-foliage"></div>
+      
+      <!-- Fruits (Comments) will be injected here -->
+      <div id="fruits-container"></div>
+    </main>
+
+    <section id="input-section">
+      <form id="message-form">
+        <input type="text" id="username" placeholder="이름" required maxlength="10">
+        <textarea id="usermessage" placeholder="응원의 메시지를 남겨주세요 (짧을수록 예뻐요!)" required maxlength="50"></textarea>
+        <button type="submit">희망 열매 달기</button>
+      </form>
+    </section>
+  </div>
+  <script type="module" src="/main.js"></script>
 </body>
 </html>

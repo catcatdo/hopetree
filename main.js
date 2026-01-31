@@ -1,1 +1,137 @@
-// Add JS here
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  onSnapshot, 
+  query, 
+  orderBy, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAXLOY5jFFC4_8IhLvSGX7ldnJs_DWP98U",
+  authDomain: "hopetree-79e2f.firebaseapp.com",
+  projectId: "hopetree-79e2f",
+  storageBucket: "hopetree-79e2f.firebasestorage.app",
+  messagingSenderId: "462749351611",
+  appId: "1:462749351611:web:cef13ad3eb3e77e98d739e",
+  measurementId: "G-VMLYFEG97J"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+// DOM Elements
+const treeContainer = document.getElementById('tree-container');
+const foliage = document.querySelector('.tree-foliage');
+const form = document.getElementById('message-form');
+const btn = form.querySelector('button');
+
+// --- Tree Logic ---
+
+function updateTreeGrowth(count) {
+  treeContainer.className = ''; // reset
+  if (count < 5) {
+    treeContainer.classList.add('tree-stage-1');
+  } else if (count < 15) {
+    treeContainer.classList.add('tree-stage-2');
+  } else {
+    treeContainer.classList.add('tree-stage-3');
+  }
+}
+
+function getRandomPositionInFoliage() {
+  const x = Math.random() * 80 - 40; // -40% to 40%
+  const y = Math.random() * 80 - 40; 
+  return { x: 50 + x, y: 50 + y }; // Percentages centered at 50,50
+}
+
+function renderFruit(doc) {
+  const data = doc.data();
+  // Avoid duplicates if re-rendering (simple check)
+  if (document.getElementById(doc.id)) return;
+
+  const fruit = document.createElement('div');
+  fruit.id = doc.id; // Store Doc ID
+  fruit.className = 'fruit';
+  fruit.textContent = '❤';
+  
+  // Restore position if we saved it, or generate new
+  // Note: For a simpler implementation without saving x/y to DB, 
+  // fruits will "jump" on reload. 
+  // Improvement: Generate deterministic position based on ID hash or save x/y.
+  // For now, let's keep it random for liveliness or standard random.
+  
+  const pos = getRandomPositionInFoliage();
+  fruit.style.left = `${pos.x}%`;
+  fruit.style.top = `${pos.y}%`;
+  
+  fruit.title = `${data.name}: ${data.message}`;
+  
+  fruit.onclick = () => {
+    alert(`${data.name}님의 메시지:\n\n"${data.message}"`);
+  };
+
+  foliage.appendChild(fruit);
+}
+
+// --- Real-time Listener ---
+
+// Subscribe to the 'comments' collection
+const q = query(collection(db, "comments"), orderBy("timestamp", "asc"));
+
+onSnapshot(q, (snapshot) => {
+  // Update Growth Stage based on total count
+  updateTreeGrowth(snapshot.size);
+
+  // Render changes
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === "added") {
+      renderFruit(change.doc);
+    }
+    // We can handle 'modified' or 'removed' later if needed
+  });
+});
+
+// --- Event Listeners ---
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const nameInput = document.getElementById('username');
+  const messageInput = document.getElementById('usermessage');
+  
+  const name = nameInput.value;
+  const message = messageInput.value;
+  
+  if (!name || !message) return;
+
+  // Disable button while sending
+  btn.disabled = true;
+  btn.textContent = "저장 중...";
+
+  try {
+    await addDoc(collection(db, "comments"), {
+      name: name,
+      message: message,
+      timestamp: serverTimestamp()
+    });
+    
+    // Success
+    form.reset();
+    alert("응원 메시지가 나무에 달렸습니다!");
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    alert("오류가 발생했습니다. 다시 시도해주세요.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "희망 열매 달기";
+  }
+});
+

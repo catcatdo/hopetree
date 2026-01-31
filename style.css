@@ -1,1 +1,203 @@
-/* Add styles here */
+:root {
+  --bg-color: #f0f8ff;
+  --trunk-color: #8b4513;
+  --foliage-color-1: #228b22; /* Forest Green */
+  --foliage-color-2: #32cd32; /* Lime Green */
+  --fruit-color: #ff6f61; /* Coral */
+  --text-color: #333;
+  --primary-btn: #ff6f61;
+}
+
+body {
+  font-family: 'Gowun Dodum', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrolling on the main body */
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--trunk-color);
+}
+
+header p {
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Tree Container */
+#tree-container {
+  flex-grow: 1;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Root at bottom */
+  padding-bottom: 200px; /* Space for input form */
+  transition: all 1s ease;
+}
+
+/* Tree Trunk */
+.tree-trunk {
+  width: 20px;
+  height: 100px;
+  background-color: var(--trunk-color);
+  position: absolute;
+  bottom: 0;
+  border-radius: 5px;
+  transition: all 1s ease;
+}
+
+/* Tree Foliage (The Leaves) */
+.tree-foliage {
+  width: 80px;
+  height: 80px;
+  background-color: var(--foliage-color-1);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 80px;
+  transition: all 1s ease;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Growth Stages */
+/* Stage 2 */
+.tree-stage-2 .tree-trunk {
+  width: 40px;
+  height: 180px;
+}
+.tree-stage-2 .tree-foliage {
+  width: 180px;
+  height: 180px;
+  bottom: 160px;
+}
+
+/* Stage 3 (Full Tree) */
+.tree-stage-3 .tree-trunk {
+  width: 60px;
+  height: 250px;
+}
+.tree-stage-3 .tree-foliage {
+  width: 300px;
+  height: 300px;
+  bottom: 220px;
+  border-radius: 60% 40% 70% 30% / 50% 60% 30% 70%; /* More organic shape */
+  background: radial-gradient(circle at 30% 30%, var(--foliage-color-2), var(--foliage-color-1));
+}
+
+/* Fruits (Comments) */
+.fruit {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: var(--fruit-color);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  color: white;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.fruit:hover {
+  transform: scale(1.2);
+}
+
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Tooltip/Modal for Message */
+.message-popup {
+  position: absolute;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  width: 200px;
+  text-align: center;
+}
+.message-popup.visible {
+  opacity: 1;
+}
+
+/* Input Section */
+#input-section {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  z-index: 20;
+}
+
+#message-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  align-items: center;
+}
+
+#username {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 80px;
+}
+
+#usermessage {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: none;
+  height: 40px;
+}
+
+button[type="submit"] {
+  background-color: var(--primary-btn);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 5px;
+  height: 42px;
+  cursor: pointer;
+  font-weight: bold;
+}
