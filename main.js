@@ -227,56 +227,6 @@ function animateCat(cat) {
 setTimeout(() => animateCat(yellowCat), 3000 + Math.random() * 5000);
 setTimeout(() => animateCat(blackCat), 15000 + Math.random() * 10000);
 
-// --- Hanwha Eagles Baseball Player Animation ---
-
-const baseballPlayer = document.getElementById('baseball-player');
-
-function resetPlayerClasses() {
-  baseballPlayer.classList.remove('visible', 'walking', 'reverse', 'swinging', 'tired');
-}
-
-function animateBaseballPlayer() {
-  resetPlayerClasses();
-  baseballPlayer.style.left = '-40px';
-
-  // Step 1: Walk in
-  baseballPlayer.classList.add('visible', 'walking');
-
-  // Step 2: After walking in (10s), start swinging
-  setTimeout(() => {
-    baseballPlayer.classList.remove('walking');
-    // Set position explicitly for swinging
-    baseballPlayer.style.left = 'calc(50% - 14px)';
-    baseballPlayer.classList.add('swinging');
-
-    // Step 3: After swinging (5-8s), get tired
-    const swingDuration = 5000 + Math.random() * 3000;
-    setTimeout(() => {
-      baseballPlayer.classList.remove('swinging');
-      baseballPlayer.classList.add('tired');
-
-      // Step 4: After being tired (3-4s), walk away
-      const tiredDuration = 3000 + Math.random() * 1000;
-      setTimeout(() => {
-        baseballPlayer.classList.remove('tired');
-        baseballPlayer.style.left = 'calc(50% - 14px)';
-        baseballPlayer.classList.add('walking', 'reverse');
-
-        // Step 5: After walking away (10s), schedule next appearance
-        setTimeout(() => {
-          resetPlayerClasses();
-          baseballPlayer.style.left = '-40px';
-          // Random delay before next appearance (60-120 seconds)
-          setTimeout(animateBaseballPlayer, 60000 + Math.random() * 60000);
-        }, 10000);
-
-      }, tiredDuration);
-    }, swingDuration);
-  }, 10000);
-}
-
-// Start baseball player with initial delay (30-60 seconds)
-setTimeout(animateBaseballPlayer, 30000 + Math.random() * 30000);
 
 // --- Tree Logic ---
 
