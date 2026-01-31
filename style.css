@@ -59,135 +59,169 @@ header p {
   justify-content: center;
   align-items: flex-end; /* Root at bottom */
   transition: all 1s ease;
-  overflow: visible; /* Allow foliage to spill over if needed */
+  overflow: hidden; /* Keep clouds contained if needed, but usually strictly not for tree */
+  overflow: visible;
 }
 
-/* Tree Trunk */
+/* Sky & Clouds */
+#sky-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50px;
+  opacity: 0.8;
+  animation: floatCloud linear infinite;
+}
+
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  width: 50%;
+  height: 100%;
+  top: -40%;
+  left: 15%;
+  border-radius: 50%;
+}
+
+.cloud::before {
+  content: '';
+  position: absolute;
+  background: white;
+  width: 40%;
+  height: 80%;
+  top: -30%;
+  right: 15%;
+  border-radius: 50%;
+}
+
+.c1 { width: 120px; height: 40px; top: 10%; left: -120px; animation-duration: 25s; }
+.c2 { width: 80px; height: 30px; top: 25%; left: -80px; animation-duration: 35s; animation-delay: 5s; }
+.c3 { width: 100px; height: 35px; top: 15%; left: -100px; animation-duration: 30s; animation-delay: 15s; }
+
+@keyframes floatCloud {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(110vw); }
+}
+
+/* Tree Trunk - Simplified */
 .tree-trunk {
   width: 20px;
   height: 100px;
-  background: linear-gradient(90deg, #6d4c41 0%, #8d6e63 40%, #5d4037 100%);
+  background-color: #8b5a2b; /* Simple brown */
   position: absolute;
   bottom: 0;
   border-radius: 5px;
   transition: all 1s ease;
-  z-index: 1; /* Behind foliage */
+  z-index: 1;
+  transform-origin: bottom center;
+  animation: swayTrunk 4s ease-in-out infinite alternate;
 }
 
-/* Tree Foliage (The Leaves) */
+/* Tree Foliage - Simplified & Animated */
 .tree-foliage {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background-color: var(--foliage-color-1);
-  border-radius: 60% 60% 60% 60%;
+  border-radius: 50%; /* Simple circle */
   position: absolute;
-  bottom: 80px;
+  bottom: 90px;
   transition: all 1s ease;
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.1), inset -5px -5px 15px rgba(0,0,0,0.1);
+  box-shadow: none; /* Removed complex shadow */
   z-index: 2;
+  transform-origin: center bottom;
+  animation: swayFoliage 4s ease-in-out infinite alternate;
 }
 
-/* More Realistic Foliage using pseudo-elements for volume */
-.tree-foliage::before,
-.tree-foliage::after {
-  content: '';
-  position: absolute;
-  background-color: inherit;
-  border-radius: 50%;
-  transition: all 1s ease;
-  z-index: -1;
+/* Remove complex pseudo-elements for simple look */
+.tree-foliage::before, .tree-foliage::after {
+  content: none;
 }
 
-.tree-foliage::before {
-  width: 70%;
-  height: 70%;
-  top: 10%;
-  left: -20%;
-  background-color: var(--foliage-color-2);
+/* Wind Animation */
+@keyframes swayTrunk {
+  from { transform: rotate(-1deg); }
+  to { transform: rotate(1deg); }
 }
 
-.tree-foliage::after {
-  width: 70%;
-  height: 70%;
-  top: 10%;
-  right: -20%;
-  background-color: var(--foliage-color-2);
+@keyframes swayFoliage {
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(2deg); }
 }
 
 /* Growth Stages */
 /* Stage 2 */
 .tree-stage-2 .tree-trunk {
-  width: 40px;
-  height: 180px;
-  border-radius: 10px 10px 5px 5px;
+  width: 30px;
+  height: 160px;
 }
 .tree-stage-2 .tree-foliage {
   width: 180px;
-  height: 160px;
-  bottom: 160px;
-  border-radius: 50% 50% 40% 40%;
+  height: 180px;
+  bottom: 150px;
 }
-/* Adjust pseudo-elements for Stage 2 */
-.tree-stage-2 .tree-foliage::before { top: 20%; left: -25%; width: 60%; height: 60%; }
-.tree-stage-2 .tree-foliage::after { top: 15%; right: -25%; width: 65%; height: 65%; }
-
 
 /* Stage 3 (Full Tree) */
 .tree-stage-3 .tree-trunk {
-  width: 80px;
-  height: 300px;
-  border-radius: 15px 15px 8px 8px;
-  background: linear-gradient(90deg, #5d4037 0%, #795548 30%, #4e342e 80%, #3e2723 100%);
+  width: 50px;
+  height: 240px;
 }
 .tree-stage-3 .tree-foliage {
-  width: 350px;
-  height: 300px;
-  bottom: 250px;
-  border-radius: 50% 50% 45% 45%; 
-  background: radial-gradient(circle at 30% 30%, #4caf50, #2e7d32);
-}
-/* Adjust pseudo-elements for Stage 3 to make it fluffy */
-.tree-stage-3 .tree-foliage::before {
-  width: 80%;
-  height: 80%;
-  top: 20%;
-  left: -30%;
-  background: radial-gradient(circle at 40% 20%, #66bb6a, #388e3c);
-}
-.tree-stage-3 .tree-foliage::after {
-  width: 80%;
-  height: 80%;
-  top: 30%;
-  right: -30%;
-  background: radial-gradient(circle at 60% 20%, #66bb6a, #388e3c);
+  width: 280px;
+  height: 280px;
+  bottom: 230px;
 }
 
 
-/* Fruits (Comments) */
+/* Ribbons (Comments) */
 .fruit {
   position: absolute;
-  width: 30px;
-  height: 30px;
-  background-color: var(--fruit-color);
-  border-radius: 50%;
+  width: 24px;
+  height: 60px; /* Vertical ribbon */
+  background-color: #ffeb3b; /* Yellow ribbon default */
+  border-radius: 2px;
   cursor: pointer;
   display: flex;
   justify-content: center;
-  align-items: center;
-  font-size: 0.8rem;
-  color: white;
-  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  z-index: 10; /* Above foliage */
+  align-items: flex-start;
+  padding-top: 5px;
+  font-size: 0.7rem;
+  color: #5d4037;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  z-index: 10;
+  transform-origin: top center;
+  animation: swayRibbon 3s ease-in-out infinite alternate;
+  writing-mode: vertical-rl; /* Vertical text */
+  text-orientation: upright;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'Gowun Dodum', sans-serif;
+  border-bottom: 5px solid rgba(0,0,0,0.1); /* Ribbon visual detail */
 }
+
+/* Randomize ribbon colors (using nth-child logic in JS or CSS if possible, keeping simple yellow for now or adding variation classes) */
+.fruit:nth-child(2n) { background-color: #ff8a80; color: white; } /* Reddish */
+.fruit:nth-child(3n) { background-color: #80d8ff; color: #01579b; } /* Blueish */
+.fruit:nth-child(5n) { background-color: #ccff90; color: #33691e; } /* Greenish */
 
 .fruit:hover {
-  transform: scale(1.2);
+  transform: scale(1.1) rotate(0deg) !important; /* Pause sway on hover */
+  z-index: 20;
 }
 
-@keyframes popIn {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes swayRibbon {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
 }
 
 /* Tooltip/Modal for Message */

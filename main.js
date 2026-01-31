@@ -54,23 +54,22 @@ function getRandomPositionInFoliage() {
 
 function renderFruit(doc) {
   const data = doc.data();
-  // Avoid duplicates if re-rendering (simple check)
   if (document.getElementById(doc.id)) return;
 
   const fruit = document.createElement('div');
-  fruit.id = doc.id; // Store Doc ID
+  fruit.id = doc.id; 
   fruit.className = 'fruit';
-  fruit.textContent = '❤';
   
-  // Restore position if we saved it, or generate new
-  // Note: For a simpler implementation without saving x/y to DB, 
-  // fruits will "jump" on reload. 
-  // Improvement: Generate deterministic position based on ID hash or save x/y.
-  // For now, let's keep it random for liveliness or standard random.
+  // Ribbon Content: Display message instead of Heart
+  // Truncate to first few chars for the tag
+  fruit.textContent = data.message.substring(0, 4) + (data.message.length > 4 ? ".." : "");
   
   const pos = getRandomPositionInFoliage();
   fruit.style.left = `${pos.x}%`;
   fruit.style.top = `${pos.y}%`;
+  
+  // Random animation delay for natural swaying
+  fruit.style.animationDelay = `${Math.random() * 2}s`;
   
   fruit.title = `${data.name}: ${data.message}`;
   
