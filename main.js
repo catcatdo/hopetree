@@ -258,15 +258,15 @@ const usedPositions = [];
 const GRID_SIZE = 12; // percentage grid size (smaller = more spread out for larger tree)
 
 function getRandomPositionInFoliage() {
-  // Define grid positions within the foliage area (circular)
+  // Define grid positions within the foliage area (vertical ellipse shape)
   const availablePositions = [];
 
-  // Create grid positions within circular foliage (full coverage)
-  for (let gx = 10; gx <= 90; gx += GRID_SIZE) {
-    for (let gy = 10; gy <= 90; gy += GRID_SIZE) {
-      // Check if position is within circular foliage shape (symmetric)
-      const dx = (gx - 50) / 45;
-      const dy = (gy - 50) / 45;
+  // Create grid positions within vertical ellipse foliage (taller than wide)
+  for (let gx = 15; gx <= 85; gx += GRID_SIZE) {
+    for (let gy = 8; gy <= 92; gy += GRID_SIZE) {
+      // Check if position is within vertical ellipse shape (narrower x, taller y)
+      const dx = (gx - 50) / 38;  // narrower horizontally
+      const dy = (gy - 50) / 48;  // taller vertically
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (distance < 0.95) {
@@ -287,15 +287,15 @@ function getRandomPositionInFoliage() {
     const angle = Math.random() * 2 * Math.PI;
     const radius = Math.sqrt(Math.random()) * 0.42;
     return {
-      x: 50 + radius * Math.cos(angle) * 90 + (Math.random() - 0.5) * 10,
-      y: 50 + radius * Math.sin(angle) * 90 + (Math.random() - 0.5) * 10
+      x: 50 + radius * Math.cos(angle) * 38 + (Math.random() - 0.5) * 8,
+      y: 50 + radius * Math.sin(angle) * 48 + (Math.random() - 0.5) * 8
     };
   }
 
   // Pick random available position with small offset for natural look
   const pos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-  const offsetX = (Math.random() - 0.5) * 6;
-  const offsetY = (Math.random() - 0.5) * 6;
+  const offsetX = (Math.random() - 0.5) * 5;
+  const offsetY = (Math.random() - 0.5) * 5;
 
   const finalPos = { x: pos.x + offsetX, y: pos.y + offsetY };
   usedPositions.push(finalPos);
