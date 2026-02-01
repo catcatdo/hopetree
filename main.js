@@ -255,7 +255,7 @@ window.previewTreeGrowth = function(percent) {
 
 // Grid-based position system to prevent overlaps
 const usedPositions = [];
-const GRID_SIZE = 12; // percentage grid size
+const GRID_SIZE = 16; // percentage grid size (larger = less overlap)
 
 function getRandomPositionInFoliage() {
   // Define grid positions within the foliage area (circular)
