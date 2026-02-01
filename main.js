@@ -255,21 +255,21 @@ window.previewTreeGrowth = function(percent) {
 
 // Grid-based position system to prevent overlaps
 const usedPositions = [];
-const GRID_SIZE = 20; // percentage grid size (larger = less overlap)
+const GRID_SIZE = 12; // percentage grid size (smaller = more spread out for larger tree)
 
 function getRandomPositionInFoliage() {
   // Define grid positions within the foliage area (circular)
   const availablePositions = [];
 
-  // Create grid positions within circular foliage
-  for (let gx = 15; gx <= 85; gx += GRID_SIZE) {
-    for (let gy = 15; gy <= 85; gy += GRID_SIZE) {
-      // Check if position is within circular foliage shape
-      const dx = (gx - 50) / 50;
-      const dy = (gy - 50) / 40;
+  // Create grid positions within circular foliage (full coverage)
+  for (let gx = 10; gx <= 90; gx += GRID_SIZE) {
+    for (let gy = 10; gy <= 90; gy += GRID_SIZE) {
+      // Check if position is within circular foliage shape (symmetric)
+      const dx = (gx - 50) / 45;
+      const dy = (gy - 50) / 45;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 0.85) {
+      if (distance < 0.95) {
         // Check if position is not already used
         const isUsed = usedPositions.some(pos =>
           Math.abs(pos.x - gx) < GRID_SIZE && Math.abs(pos.y - gy) < GRID_SIZE
@@ -285,10 +285,10 @@ function getRandomPositionInFoliage() {
   // If all positions used, reset and allow overlaps with offset
   if (availablePositions.length === 0) {
     const angle = Math.random() * 2 * Math.PI;
-    const radius = Math.sqrt(Math.random()) * 0.38;
+    const radius = Math.sqrt(Math.random()) * 0.42;
     return {
-      x: 50 + radius * Math.cos(angle) * 100 + (Math.random() - 0.5) * 10,
-      y: 50 + radius * Math.sin(angle) * 80 + (Math.random() - 0.5) * 10
+      x: 50 + radius * Math.cos(angle) * 90 + (Math.random() - 0.5) * 10,
+      y: 50 + radius * Math.sin(angle) * 90 + (Math.random() - 0.5) * 10
     };
   }
 
