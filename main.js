@@ -253,59 +253,40 @@ window.previewTreeGrowth = function(percent) {
   console.log(`🌱 나무 성장률: ${Math.round(factor * 100)}%`);
 };
 
-// Grid-based position system to prevent overlaps
-const usedPositions = [];
-const GRID_SIZE = 12; // percentage grid size (smaller = more spread out for larger tree)
+// --- Fruit placement: overlap-safe radial slots ---
 
-function getRandomPositionInFoliage() {
-  // Define grid positions within the foliage area (vertical ellipse shape)
-  const availablePositions = [];
+function createFruitSlots(count) {
+  const slots = [];
+  if (count <= 0) return slots;
 
-  // Create grid positions within vertical ellipse foliage (taller than wide)
-  for (let gx = 15; gx <= 85; gx += GRID_SIZE) {
-    for (let gy = 8; gy <= 92; gy += GRID_SIZE) {
-      // Check if position is within vertical ellipse shape (narrower x, taller y)
-      const dx = (gx - 50) / 38;  // narrower horizontally
-      const dy = (gy - 50) / 48;  // taller vertically
-      const distance = Math.sqrt(dx * dx + dy * dy);
+  const ringPlan = [8, 12, 16, 20, 24, 28, 32];
+  let remaining = count;
+  let ringIndex = 0;
 
-      if (distance < 0.95) {
-        // Check if position is not already used
-        const isUsed = usedPositions.some(pos =>
-          Math.abs(pos.x - gx) < GRID_SIZE && Math.abs(pos.y - gy) < GRID_SIZE
-        );
+  while (remaining > 0) {
+    const capacity = ringPlan[ringIndex] || (32 + ringIndex * 4);
+    const inRing = Math.min(capacity, remaining);
+    const radiusX = 12 + ringIndex * 6.5;
+    const radiusY = 16 + ringIndex * 7.5;
 
-        if (!isUsed) {
-          availablePositions.push({ x: gx, y: gy });
-        }
-      }
+    for (let i = 0; i < inRing; i++) {
+      const baseAngle = (Math.PI * 2 * i) / inRing;
+      const jitter = ((i % 2 === 0 ? 1 : -1) * 0.05) + (Math.random() - 0.5) * 0.03;
+      const angle = baseAngle + jitter;
+      const x = 50 + Math.cos(angle) * radiusX;
+      const y = 52 + Math.sin(angle) * radiusY;
+      slots.push({ x, y });
     }
+
+    remaining -= inRing;
+    ringIndex += 1;
   }
 
-  // If all positions used, reset and allow overlaps with offset
-  if (availablePositions.length === 0) {
-    const angle = Math.random() * 2 * Math.PI;
-    const radius = Math.sqrt(Math.random()) * 0.42;
-    return {
-      x: 50 + radius * Math.cos(angle) * 38 + (Math.random() - 0.5) * 8,
-      y: 50 + radius * Math.sin(angle) * 48 + (Math.random() - 0.5) * 8
-    };
-  }
-
-  // Pick random available position with small offset for natural look
-  const pos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-  const offsetX = (Math.random() - 0.5) * 5;
-  const offsetY = (Math.random() - 0.5) * 5;
-
-  const finalPos = { x: pos.x + offsetX, y: pos.y + offsetY };
-  usedPositions.push(finalPos);
-
-  return finalPos;
+  return slots;
 }
 
-function renderFruit(doc) {
+function renderFruit(doc, pos) {
   const data = doc.data();
-  if (document.getElementById(doc.id)) return;
 
   const fruit = document.createElement('div');
   fruit.id = doc.id;
@@ -313,11 +294,13 @@ function renderFruit(doc) {
 
   // Show only the name (truncated if too long)
   const maxLen = 4;
-  fruit.textContent = data.name.length > maxLen
-    ? data.name.substring(0, maxLen)
-    : data.name;
+  const safeName = (data.name || '익명').trim();
+  const safeMessage = (data.message || '').trim();
 
-  const pos = getRandomPositionInFoliage();
+  fruit.textContent = safeName.length > maxLen
+    ? safeName.substring(0, maxLen)
+    : safeName;
+
   fruit.style.left = `${pos.x}%`;
   fruit.style.top = `${pos.y}%`;
 
@@ -325,13 +308,19 @@ function renderFruit(doc) {
   fruit.style.animationDelay = `${Math.random() * 4}s`;
   fruit.style.animationDuration = `${3 + Math.random() * 2}s`;
 
-  fruit.title = `${data.name}: ${data.message}`;
+  fruit.title = `${safeName}: ${safeMessage}`;
 
   fruit.onclick = () => {
-    showMessage(data.name, data.message);
+    showMessage(safeName, safeMessage);
   };
 
   fruitsContainer.appendChild(fruit);
+}
+
+function renderAllFruits(docs) {
+  fruitsContainer.innerHTML = '';
+  const slots = createFruitSlots(docs.length);
+  docs.forEach((doc, idx) => renderFruit(doc, slots[idx] || { x: 50, y: 52 }));
 }
 
 // Custom message modal instead of alert
@@ -379,28 +368,32 @@ const q = query(collection(db, "comments"), orderBy("timestamp", "asc"));
 onSnapshot(q, (snapshot) => {
   // Update Growth Stage based on total count
   updateTreeGrowth(snapshot.size);
-
-  // Render changes
-  snapshot.docChanges().forEach((change) => {
-    if (change.type === "added") {
-      renderFruit(change.doc);
-    }
-    // We can handle 'modified' or 'removed' later if needed
-  });
+  renderAllFruits(snapshot.docs);
+}, (error) => {
+  console.error('Firestore 실시간 구독 오류:', error);
+  showToast('서버 연결이 불안정해. 잠시 후 다시 시도해줘.');
 });
 
 // --- Event Listeners ---
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const nameInput = document.getElementById('username');
   const messageInput = document.getElementById('usermessage');
-  
-  const name = nameInput.value;
-  const message = messageInput.value;
-  
-  if (!name || !message) return;
+
+  const name = (nameInput.value || '').trim();
+  const message = (messageInput.value || '').trim();
+
+  if (!name || !message) {
+    showToast('이름과 메시지를 모두 입력해줘.');
+    return;
+  }
+
+  if (name.length > 10 || message.length > 50) {
+    showToast('글자 수 제한을 확인해줘.');
+    return;
+  }
 
   // Disable button while sending
   btn.disabled = true;
@@ -408,17 +401,17 @@ form.addEventListener('submit', async (e) => {
 
   try {
     await addDoc(collection(db, "comments"), {
-      name: name,
-      message: message,
+      name,
+      message,
       timestamp: serverTimestamp()
     });
 
     // Success
     form.reset();
-    showToast('메시지가 열매로 달렸습니다!');
+    showToast('메시지가 열매로 달렸어!');
   } catch (error) {
     console.error("Error adding document: ", error);
-    showToast('오류가 발생했습니다. 다시 시도해주세요');
+    showToast('오류가 발생했어. 잠시 후 다시 시도해줘.');
   } finally {
     btn.disabled = false;
     btn.textContent = "메시지 달기";
