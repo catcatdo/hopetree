@@ -9,6 +9,7 @@ import {
   orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { createStickerRenderer } from "./stickerRenderer.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAXLOY5jFFC4_8IhLvSGX7ldnJs_DWP98U",
@@ -20,90 +21,25 @@ const firebaseConfig = {
   measurementId: "G-VMLYFEG97J"
 };
 
+const RATE_LIMIT_SECONDS = 20;
+const LAST_SUBMIT_KEY = "hopetree_last_submit_at";
+const BLOCKED_WORDS = ["sex", "porn", "도박", "먹튀", "바카라", "casino", "시발", "병신", "fuck"];
+
 initializeApp(firebaseConfig);
 getAnalytics();
 const db = getFirestore();
 
 const form = document.getElementById("message-form");
 const btn = form.querySelector("button");
-const catLayer = document.getElementById("cat-layer");
 const statusLine = document.getElementById("status-line");
-const scene = document.getElementById("scene");
+const commentCount = document.getElementById("comment-count");
 
-const RATE_LIMIT_SECONDS = 15;
-const LAST_SUBMIT_KEY = "hopetree_last_submit_at";
-const MAX_RENDER_CATS = window.innerWidth < 700 ? 8 : 12;
-const FALLBACK_CAT_ASSET = "./assets/cats/sheet.png";
-const CUSTOM_BG_CANDIDATES = [
-  "./assets/custom/bg/yard.jpg",
-  "./assets/custom/bg/yard.png",
-  "./assets/custom/bg/yard.webp",
-  "./assets/bg/yard.webp"
-];
-const CAT_ASSET_CANDIDATES = [
-  "./assets/custom/cats/cat01.gif",
-  "./assets/custom/cats/cat01.png",
-  "./assets/custom/cats/cat01.webp",
-  "./assets/custom/cats/cat02.gif",
-  "./assets/custom/cats/cat02.png",
-  "./assets/custom/cats/cat02.webp",
-  "./assets/custom/cats/cat03.gif",
-  "./assets/custom/cats/cat03.png",
-  "./assets/custom/cats/cat03.webp",
-  "./assets/custom/cats/cat04.gif",
-  "./assets/custom/cats/cat04.png",
-  "./assets/custom/cats/cat04.webp",
-  FALLBACK_CAT_ASSET
-];
-const SCENE_SLOTS = [
-  { x: 15, y: 59, w: 15, h: 24, zone: "stove-mat" },
-  { x: 30, y: 49, w: 18, h: 28, zone: "bench-top" },
-  { x: 41, y: 72, w: 18, h: 24, zone: "pink-cushion" },
-  { x: 55, y: 60, w: 18, h: 28, zone: "table" },
-  { x: 73, y: 53, w: 18, h: 24, zone: "bed" },
-  { x: 78, y: 74, w: 18, h: 24, zone: "green-rug" },
-  { x: 60, y: 87, w: 18, h: 24, zone: "food-bowl" },
-  { x: 84, y: 90, w: 22, h: 26, zone: "stone-pad" },
-  { x: 50, y: 85, w: 20, h: 26, zone: "ramp-bottom" },
-  { x: 37, y: 84, w: 19, h: 24, zone: "step-corner" },
-  { x: 66, y: 42, w: 14, h: 20, zone: "window-edge" },
-  { x: 23, y: 35, w: 16, h: 22, zone: "tv-top" }
-];
+const stickerRenderer = createStickerRenderer({
+  container: document.getElementById("sticker-layer"),
+  onSelect: showMessageCard
+});
 
-let availableCatAssets = [FALLBACK_CAT_ASSET];
-let latestDocs = [];
-
-async function fileExists(url) {
-  try {
-    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
-
-async function applyBackground() {
-  for (const candidate of CUSTOM_BG_CANDIDATES) {
-    if (await fileExists(candidate)) {
-      scene.style.backgroundImage = `url('${candidate}')`;
-      if (candidate.startsWith("./assets/custom/bg/")) {
-        scene.classList.add("has-custom-bg");
-      }
-      return;
-    }
-  }
-}
-
-async function loadAvailableCatAssets() {
-  const found = [];
-  for (const candidate of CAT_ASSET_CANDIDATES) {
-    if (await fileExists(candidate)) {
-      found.push(candidate);
-    }
-  }
-
-  availableCatAssets = found.length ? found : [FALLBACK_CAT_ASSET];
-}
+let latestComments = [];
 
 function showToast(message) {
   const existing = document.querySelector(".toast");
@@ -124,16 +60,18 @@ function formatDate(value) {
   }
 
   if (typeof value.toDate === "function") {
-    return value.toDate().toLocaleDateString("ko-KR", {
+    return value.toDate().toLocaleString("ko-KR", {
       month: "short",
-      day: "numeric"
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
     });
   }
 
   return "";
 }
 
-function showMessages(catData) {
+function showMessageCard(comment) {
   const existing = document.querySelector(".message-modal");
   if (existing) {
     existing.remove();
@@ -141,51 +79,18 @@ function showMessages(catData) {
 
   const modal = document.createElement("div");
   modal.className = "message-modal";
-
-  const messages = catData.messages.length ? catData.messages : [{ message: "아직 메시지가 없어.", timestamp: null }];
-  let index = messages.length - 1;
-
   modal.innerHTML = `
     <div class="modal-content">
       <p class="modal-name"></p>
       <p class="modal-meta"></p>
       <p class="modal-message"></p>
-      <div class="modal-actions">
-        <button type="button" class="modal-nav prev">이전</button>
-        <span class="modal-count"></span>
-        <button type="button" class="modal-nav next">다음</button>
-      </div>
       <button type="button" class="modal-close">닫기</button>
     </div>
   `;
 
-  modal.querySelector(".modal-name").textContent = catData.name;
-  const meta = modal.querySelector(".modal-meta");
-  const message = modal.querySelector(".modal-message");
-  const count = modal.querySelector(".modal-count");
-  const prev = modal.querySelector(".modal-nav.prev");
-  const next = modal.querySelector(".modal-nav.next");
-
-  function renderMessage() {
-    const current = messages[index];
-    message.textContent = current.message || "메시지가 비어 있어.";
-    const postedAt = formatDate(current.timestamp);
-    meta.textContent = postedAt ? `${postedAt}에 남긴 응원` : `${messages.length}개의 메시지`;
-    count.textContent = `${index + 1} / ${messages.length}`;
-    prev.disabled = messages.length < 2;
-    next.disabled = messages.length < 2;
-  }
-
-  prev.onclick = () => {
-    index = (index - 1 + messages.length) % messages.length;
-    renderMessage();
-  };
-
-  next.onclick = () => {
-    index = (index + 1) % messages.length;
-    renderMessage();
-  };
-
+  modal.querySelector(".modal-name").textContent = comment.name || "익명";
+  modal.querySelector(".modal-meta").textContent = formatDate(comment.timestamp) || "방금 도착한 응원";
+  modal.querySelector(".modal-message").textContent = comment.message || "메시지가 비어 있어.";
   modal.querySelector(".modal-close").onclick = () => modal.remove();
   modal.onclick = (event) => {
     if (event.target === modal) {
@@ -193,136 +98,25 @@ function showMessages(catData) {
     }
   };
 
-  renderMessage();
   document.body.appendChild(modal);
 }
 
 function hashString(value) {
   let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = ((hash << 5) - hash + value.charCodeAt(i)) | 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
   }
   return Math.abs(hash);
-}
-
-function daySeed() {
-  const now = new Date();
-  return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-}
-
-function seededPick(items, limit) {
-  const seed = hashString(daySeed());
-  return items
-    .map((item, index) => ({
-      item,
-      key: (hashString(item.name + seed) + index * 17) % 100000
-    }))
-    .sort((a, b) => a.key - b.key)
-    .slice(0, Math.min(limit, items.length))
-    .map((entry) => entry.item);
-}
-
-function catBehavior(seed) {
-  const list = ["idle", "tail", "float", "sleep"];
-  return list[seed % list.length];
-}
-
-function groupCommentsByName(docs) {
-  const grouped = new Map();
-
-  docs.forEach((doc) => {
-    const data = doc.data();
-    const rawName = typeof data.name === "string" ? data.name.trim() : "";
-    const name = rawName || "익명";
-    const key = name.toLowerCase();
-
-    if (!grouped.has(key)) {
-      grouped.set(key, {
-        id: key,
-        name,
-        messages: []
-      });
-    }
-
-    grouped.get(key).messages.push({
-      id: doc.id,
-      message: typeof data.message === "string" ? data.message.trim() : "",
-      timestamp: data.timestamp || null
-    });
-  });
-
-  return Array.from(grouped.values()).map((cat) => ({
-    ...cat,
-    messages: cat.messages.sort((a, b) => {
-      const left = typeof a.timestamp?.toMillis === "function" ? a.timestamp.toMillis() : 0;
-      const right = typeof b.timestamp?.toMillis === "function" ? b.timestamp.toMillis() : 0;
-      return left - right;
-    })
-  }));
-}
-
-function getSlot(index) {
-  return SCENE_SLOTS[index % SCENE_SLOTS.length];
-}
-
-function getCatAsset(seed) {
-  return availableCatAssets[seed % availableCatAssets.length];
-}
-
-function renderCats(docs) {
-  catLayer.innerHTML = "";
-
-  const groupedCats = seededPick(groupCommentsByName(docs), MAX_RENDER_CATS);
-
-  groupedCats.forEach((catData, index) => {
-    const seed = hashString(catData.id);
-    const slot = getSlot(index);
-    const behavior = catBehavior(seed);
-    const asset = getCatAsset(seed);
-    const renderW = 92 + (seed % 18);
-    const renderH = 88 + (seed % 26);
-    const angle = (seed % 7) - 3;
-
-    const cat = document.createElement("button");
-    cat.type = "button";
-    cat.className = `cat ${behavior}`;
-    cat.style.left = `${slot.x}%`;
-    cat.style.top = `${slot.y}%`;
-    cat.style.zIndex = `${Math.round(slot.y * 10)}`;
-    cat.style.setProperty("--cat-w", `${renderW}px`);
-    cat.style.setProperty("--cat-h", `${renderH}px`);
-    cat.style.setProperty("--cat-tilt", `${angle}deg`);
-    cat.title = `${catData.name} (${catData.messages.length})`;
-    const sprite = document.createElement("img");
-    sprite.className = "sprite-img";
-    sprite.src = asset;
-    sprite.alt = catData.name;
-    sprite.loading = "lazy";
-    sprite.onerror = function onSpriteError() {
-      this.style.opacity = "0.25";
-    };
-
-    const collar = document.createElement("div");
-    collar.className = "collar";
-    collar.textContent = catData.name.slice(0, 8);
-
-    cat.appendChild(sprite);
-    cat.appendChild(collar);
-    cat.onclick = () => showMessages(catData);
-    catLayer.appendChild(cat);
-  });
-
-  if (!groupedCats.length) {
-    statusLine.textContent = "아직 정원에 나온 고양이가 없어. 첫 댓글을 남겨줘.";
-    return;
-  }
-
-  statusLine.textContent = `오늘은 ${groupedCats.length}마리의 이름 고양이가 정원에 나와 있어.`;
 }
 
 function containsBlockedPattern(text) {
   const lowered = text.toLowerCase();
   return lowered.includes("http://") || lowered.includes("https://") || lowered.includes("www.");
+}
+
+function containsBlockedWord(text) {
+  const lowered = text.toLowerCase();
+  return BLOCKED_WORDS.some((word) => lowered.includes(word));
 }
 
 function getRemainingCooldownSeconds() {
@@ -335,26 +129,35 @@ function getRemainingCooldownSeconds() {
   return Math.max(0, Math.ceil(RATE_LIMIT_SECONDS - elapsed));
 }
 
-Promise.all([applyBackground(), loadAvailableCatAssets()])
-  .then(() => {
-    if (latestDocs.length) {
-      renderCats(latestDocs);
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+function normalizeComment(doc) {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    name: typeof data.name === "string" && data.name.trim() ? data.name.trim() : "익명",
+    message: typeof data.message === "string" ? data.message.trim() : "",
+    timestamp: data.timestamp || null,
+    seed: hashString(doc.id + (data.name || "anon"))
+  };
+}
 
-const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "asc"));
+function updateWall(comments) {
+  latestComments = comments;
+  commentCount.textContent = String(comments.length);
+  statusLine.textContent = comments.length
+    ? `지금 ${comments.length}개의 응원이 벽을 채우고 있어.`
+    : "첫 번째 응원 스티커를 붙여줘.";
+  stickerRenderer.render(comments);
+}
+
+const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 onSnapshot(
   commentsQuery,
   (snapshot) => {
-    latestDocs = snapshot.docs;
-    renderCats(latestDocs);
+    updateWall(snapshot.docs.map(normalizeComment));
   },
   (error) => {
     console.error(error);
-    statusLine.textContent = "연결이 잠시 불안정해. 잠깐 후 다시 봐줘.";
+    statusLine.textContent = "연결이 잠시 흔들렸어. 응원을 다시 불러오는 중…";
     showToast("서버 연결이 불안정해. 잠시 후 다시 시도해줘.");
   }
 );
@@ -372,7 +175,7 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (name.length > 10 || message.length > 50) {
+  if (name.length > 10 || message.length > 90) {
     showToast("글자 수 제한을 확인해줘.");
     return;
   }
@@ -382,15 +185,20 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (containsBlockedWord(name) || containsBlockedWord(message)) {
+    showToast("다른 표현으로 적어줘.");
+    return;
+  }
+
   const cooldownLeft = getRemainingCooldownSeconds();
   if (cooldownLeft > 0) {
-    showToast(`${cooldownLeft}초 뒤에 다시 남겨줘.`);
+    showToast(`${cooldownLeft}초 뒤에 다시 붙여줘.`);
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = "남기는 중...";
-  statusLine.textContent = "응원을 고양이 목걸이에 달고 있어…";
+  btn.textContent = "붙이는 중...";
+  statusLine.textContent = "새 응원 스티커를 벽에 붙이는 중…";
 
   try {
     await addDoc(collection(db, "comments"), {
@@ -400,12 +208,12 @@ form.addEventListener("submit", async (event) => {
     });
     localStorage.setItem(LAST_SUBMIT_KEY, String(Date.now()));
     form.reset();
-    showToast("응원이 잘 전달됐어.");
+    showToast("응원 스티커를 붙였어.");
   } catch (error) {
     console.error(error);
     showToast("오류가 생겼어. 잠시 후 다시 시도해줘.");
   } finally {
     btn.disabled = false;
-    btn.textContent = "메시지 남기기";
+    btn.textContent = "스티커 붙이기";
   }
 });

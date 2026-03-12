@@ -3,32 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>혼자가는빕스</title>
+  <title>혼자가는빕스 담벼락</title>
   <link href="./style.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
   <div id="app">
     <header id="top-header">
-      <h1>혼자가는빕스</h1>
-      <p id="status-line">응원이 고양이 정원에 머물고 있어…</p>
+      <div class="title-copy">
+        <h1>혼자가는빕스 담벼락</h1>
+        <p id="status-line">응원 스티커를 벽에 붙이는 중…</p>
+      </div>
+      <div class="header-actions">
+        <div class="growth-summary">
+          <strong id="comment-count">0</strong>
+          <span>개의 응원</span>
+        </div>
+      </div>
     </header>
 
     <main id="scene">
-      <div class="sky-layer"></div>
-      <div class="wall-layer"></div>
-      <div class="deck-layer"></div>
-      <div class="garden-layer"></div>
-      <div id="cat-layer"></div>
+      <div class="wall-backdrop"></div>
+      <div class="wall-pattern"></div>
+      <section id="sticker-wall">
+        <div class="wall-copy">
+          <h2>모든 응원</h2>
+          <p>댓글 하나가 스티커 한 장이 되어 이 벽을 채워요.</p>
+        </div>
+        <div id="sticker-layer" aria-live="polite"></div>
+      </section>
     </main>
 
-    <div id="ground-form">
+    <section id="composer">
+      <div class="composer-copy">
+        <h2>응원 남기기</h2>
+        <p>짧은 한마디도 괜찮아요. 벽에 바로 붙습니다.</p>
+      </div>
       <form id="message-form">
-        <input type="text" id="username" placeholder="이름" required maxlength="10">
-        <textarea id="usermessage" placeholder="응원 메시지" required maxlength="50"></textarea>
-        <button type="submit">메시지 남기기</button>
+        <input type="text" id="username" placeholder="이름" required maxlength="10" autocomplete="nickname">
+        <textarea id="usermessage" placeholder="응원 메시지" required maxlength="90"></textarea>
+        <button type="submit">스티커 붙이기</button>
       </form>
-    </div>
+    </section>
   </div>
 
   <script type="module" src="./main.js"></script>

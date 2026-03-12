@@ -1,7 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // HopeTree public encouragement messages only
     match /comments/{docId} {
       allow read: if true;
 
@@ -9,12 +8,14 @@ service cloud.firestore {
         request.resource.data.keys().hasOnly(['name', 'message', 'timestamp']) &&
         request.resource.data.name is string &&
         request.resource.data.message is string &&
+        request.resource.data.timestamp is timestamp &&
         request.resource.data.name.size() > 0 &&
         request.resource.data.name.size() <= 10 &&
         request.resource.data.message.size() > 0 &&
-        request.resource.data.message.size() <= 50;
+        request.resource.data.message.size() <= 90 &&
+        !request.resource.data.name.matches('.*(http://|https://|www\\.).*') &&
+        !request.resource.data.message.matches('.*(http://|https://|www\\.).*');
 
-      // client update/delete not needed for this app
       allow update, delete: if false;
     }
   }
