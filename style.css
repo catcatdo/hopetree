@@ -59,6 +59,18 @@ body {
   background-position: center bottom;
 }
 
+#scene.has-custom-bg {
+  background-size: cover;
+  background-position: center center;
+}
+
+#scene.has-custom-bg .sky-layer,
+#scene.has-custom-bg .wall-layer,
+#scene.has-custom-bg .deck-layer,
+#scene.has-custom-bg .garden-layer {
+  display: none;
+}
+
 .sky-layer {
   position: absolute; inset: 0;
   background: linear-gradient(#a8d4ff 0%, #d9edff 58%, #f5fbff 100%);
@@ -115,10 +127,15 @@ body {
   border: none;
   background: transparent;
   padding: 0;
-  transition: transform 0.2s ease;
+  transform: translate(-50%, -100%) rotate(var(--cat-tilt, 0deg));
+  transform-origin: center bottom;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.cat:hover { transform: scale(1.06); }
+.cat:hover {
+  filter: brightness(1.04);
+  transform: translate(-50%, -100%) rotate(var(--cat-tilt, 0deg)) scale(1.06);
+}
 
 .cat .sprite-img {
   position: absolute;
@@ -149,24 +166,30 @@ body {
   padding: 0 6px;
 }
 
-.cat.walk { animation: walkCycle 6s ease-in-out infinite; }
-.cat.sleep { animation: sleepCycle 3.2s ease-in-out infinite; }
-.cat.lie { transform: scaleY(0.78); }
-.cat.eat { animation: eatCycle 1.2s ease-in-out infinite; }
+.cat.idle { animation: idleCycle 4.6s ease-in-out infinite; }
+.cat.tail { animation: tailCycle 2.4s ease-in-out infinite; }
+.cat.float { animation: floatCycle 5.2s ease-in-out infinite; }
+.cat.sleep { animation: sleepCycle 3.4s ease-in-out infinite; }
 
-@keyframes walkCycle {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(10px); }
-  50% { transform: translateX(0); }
-  75% { transform: translateX(-10px); }
+@keyframes idleCycle {
+  0%, 100% { transform: translate(-50%, -100%) rotate(var(--cat-tilt, 0deg)); }
+  50% { transform: translate(-50%, calc(-100% - 2px)) rotate(var(--cat-tilt, 0deg)); }
 }
+
+@keyframes tailCycle {
+  0%, 100% { transform: translate(-50%, -100%) rotate(calc(var(--cat-tilt, 0deg) - 1deg)); }
+  50% { transform: translate(-50%, -100%) rotate(calc(var(--cat-tilt, 0deg) + 2deg)); }
+}
+
+@keyframes floatCycle {
+  0%, 100% { transform: translate(-50%, -100%) rotate(var(--cat-tilt, 0deg)); }
+  25% { transform: translate(calc(-50% - 2px), calc(-100% - 3px)) rotate(calc(var(--cat-tilt, 0deg) - 1deg)); }
+  75% { transform: translate(calc(-50% + 2px), calc(-100% - 2px)) rotate(calc(var(--cat-tilt, 0deg) + 1deg)); }
+}
+
 @keyframes sleepCycle {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(2px); }
-}
-@keyframes eatCycle {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
+  0%, 100% { transform: translate(-50%, -100%) rotate(var(--cat-tilt, 0deg)) scaleY(0.98); }
+  50% { transform: translate(-50%, calc(-100% + 2px)) rotate(var(--cat-tilt, 0deg)) scaleY(0.95); }
 }
 
 #ground-form {
@@ -220,7 +243,33 @@ button[type="submit"] {
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 .modal-name { margin: 0; font-size: 1rem; font-weight: 800; color: #2f6dd1; }
+.modal-meta { margin: 6px 0 0; font-size: 0.88rem; color: #64748b; }
 .modal-message { margin: 10px 0 16px; font-size: 1.05rem; line-height: 1.5; }
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.modal-nav {
+  border: 1px solid #d7e3f2;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #31547f;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+.modal-nav:disabled {
+  opacity: 0.45;
+}
+.modal-count {
+  min-width: 56px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #475569;
+  font-weight: 700;
+}
 .modal-close {
   border: none; border-radius: 10px; padding: 10px 14px;
   background: var(--primary); color: #fff; font-weight: 700;
