@@ -120,14 +120,14 @@ body {
 
 .cat:hover { transform: scale(1.06); }
 
-.cat .sprite {
+.cat .sprite-img {
   position: absolute;
   inset: 0;
-  background-image: url('./assets/cats/sheet.png');
-  background-repeat: no-repeat;
-  background-size: 1200px 615px;
-  background-position: calc(var(--sx, 0) * -1px) calc(var(--sy, 0) * -1px);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
+  pointer-events: none;
 }
 
 .cat .collar {

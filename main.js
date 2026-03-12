@@ -28,30 +28,43 @@ const form = document.getElementById('message-form');
 const btn = form.querySelector('button');
 const catLayer = document.getElementById('cat-layer');
 const statusLine = document.getElementById('status-line');
+const scene = document.getElementById('scene');
 
 const RATE_LIMIT_SECONDS = 15;
 const LAST_SUBMIT_KEY = 'hopetree_last_submit_at';
 const MAX_RENDER_CATS = window.innerWidth < 700 ? 8 : 12;
 
-const CAT_SPRITES = [
-  { x: 20, y: 25, w: 170, h: 135 },
-  { x: 180, y: 35, w: 190, h: 125 },
-  { x: 350, y: 25, w: 210, h: 140 },
-  { x: 560, y: 20, w: 200, h: 145 },
-  { x: 910, y: 20, w: 200, h: 145 },
-  { x: 20, y: 150, w: 200, h: 150 },
-  { x: 250, y: 155, w: 220, h: 145 },
-  { x: 690, y: 150, w: 170, h: 150 },
-  { x: 930, y: 150, w: 200, h: 160 },
-  { x: 20, y: 285, w: 210, h: 150 },
-  { x: 300, y: 280, w: 200, h: 150 },
-  { x: 630, y: 280, w: 200, h: 150 },
-  { x: 930, y: 280, w: 200, h: 170 },
-  { x: 20, y: 420, w: 230, h: 170 },
-  { x: 280, y: 430, w: 220, h: 160 },
-  { x: 620, y: 430, w: 280, h: 160 },
-  { x: 930, y: 420, w: 200, h: 170 }
+const CAT_ASSETS = [
+  './assets/custom/cats/cat01.gif', './assets/custom/cats/cat02.gif', './assets/custom/cats/cat03.gif',
+  './assets/custom/cats/cat04.gif', './assets/custom/cats/cat05.gif', './assets/custom/cats/cat06.gif',
+  './assets/custom/cats/cat07.png', './assets/custom/cats/cat08.png', './assets/custom/cats/cat09.png',
+  './assets/custom/cats/cat10.webp', './assets/custom/cats/cat11.webp', './assets/custom/cats/cat12.webp'
 ];
+
+async function fileExists(url) {
+  try {
+    const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function applyBackground() {
+  const candidates = [
+    './assets/custom/bg/yard.jpg',
+    './assets/custom/bg/yard.png',
+    './assets/custom/bg/yard.webp',
+    './assets/bg/yard.webp'
+  ];
+
+  for (const c of candidates) {
+    if (await fileExists(c)) {
+      scene.style.backgroundImage = `linear-gradient(to top, rgba(255,255,255,0.35), rgba(255,255,255,0.05)), url('${c}')`;
+      return;
+    }
+  }
+}
 
 function showToast(message) {
   const existing = document.querySelector('.toast');
@@ -125,9 +138,9 @@ function renderCats(docs) {
     const seed = hashString(doc.id + daySeed());
     const behavior = catBehavior(seed);
     const pos = catPosition(i, pick.length);
-    const sp = CAT_SPRITES[seed % CAT_SPRITES.length];
-    const renderW = Math.round(sp.w * 0.46);
-    const renderH = Math.round(sp.h * 0.46);
+    const asset = CAT_ASSETS[seed % CAT_ASSETS.length];
+    const renderW = 88 + (seed % 24);
+    const renderH = 64 + (seed % 18);
 
     const cat = document.createElement('button');
     cat.type = 'button';
@@ -136,11 +149,9 @@ function renderCats(docs) {
     cat.style.top = `${pos.y}%`;
     cat.style.setProperty('--cat-w', `${renderW}px`);
     cat.style.setProperty('--cat-h', `${renderH}px`);
-    cat.style.setProperty('--sx', `${sp.x}`);
-    cat.style.setProperty('--sy', `${sp.y}`);
     cat.title = `${data.name || '익명'}`;
     cat.innerHTML = `
-      <div class="sprite"></div>
+      <img class="sprite-img" src="${asset}" alt="cat" loading="lazy" onerror="this.style.opacity='0.25'" />
       <div class="collar">${(data.name || '익명').slice(0, 8)}</div>
     `;
     cat.onclick = () => showMessage(data.name || '익명', data.message || '');
@@ -161,6 +172,8 @@ function getRemainingCooldownSeconds() {
   const elapsed = (Date.now() - last) / 1000;
   return Math.max(0, Math.ceil(RATE_LIMIT_SECONDS - elapsed));
 }
+
+applyBackground();
 
 const q = query(collection(db, 'comments'), orderBy('timestamp', 'asc'));
 onSnapshot(q, (snapshot) => {
