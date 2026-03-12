@@ -94,6 +94,14 @@ body.night {
   letter-spacing: 0.05em;
 }
 
+#status-line {
+  margin-top: 8px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fef9c3;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.45);
+}
 
 /* ===== Ground Form Section ===== */
 #ground-form {
@@ -846,11 +854,11 @@ button[type="submit"]:disabled {
   }
 
   .tree-foliage {
-    bottom: calc(120px + 1920px * var(--growth-factor));
+    bottom: calc(150px + 960px * var(--growth-factor));
   }
 
   #fruits-container {
-    bottom: calc(120px + 1920px * var(--growth-factor));
+    bottom: calc(150px + 960px * var(--growth-factor));
   }
 
   .fruit {

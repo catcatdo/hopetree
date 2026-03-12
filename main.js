@@ -34,6 +34,7 @@ const fruitsContainer = document.getElementById('fruits-container');
 const form = document.getElementById('message-form');
 const btn = form.querySelector('button');
 const starsContainer = document.getElementById('stars-container');
+const statusLine = document.getElementById('status-line');
 
 // --- Day/Night Cycle based on Korean Time (KST, UTC+9) ---
 
@@ -347,6 +348,11 @@ function showMessage(name, message) {
   };
 }
 
+function setStatusLine(text) {
+  if (!statusLine) return;
+  statusLine.textContent = text;
+}
+
 // Toast notification
 function showToast(message) {
   const existing = document.querySelector('.toast');
@@ -369,8 +375,10 @@ onSnapshot(q, (snapshot) => {
   // Update Growth Stage based on total count
   updateTreeGrowth(snapshot.size);
   renderAllFruits(snapshot.docs);
+  setStatusLine('응원이 나무를 키우는 중…');
 }, (error) => {
   console.error('Firestore 실시간 구독 오류:', error);
+  setStatusLine('연결이 잠시 불안정해. 곧 다시 이어질 거야.');
   showToast('서버 연결이 불안정해. 잠시 후 다시 시도해줘.');
 });
 
@@ -398,6 +406,7 @@ form.addEventListener('submit', async (e) => {
   // Disable button while sending
   btn.disabled = true;
   btn.textContent = "달리는 중...";
+  setStatusLine('메시지를 나무에 달고 있어…');
 
   try {
     await addDoc(collection(db, "comments"), {
@@ -408,9 +417,11 @@ form.addEventListener('submit', async (e) => {
 
     // Success
     form.reset();
+    setStatusLine('따뜻한 응원이 열매로 달렸어. 고마워!');
     showToast('메시지가 열매로 달렸어!');
   } catch (error) {
     console.error("Error adding document: ", error);
+    setStatusLine('전송 중 문제가 생겼어. 다시 시도해줘.');
     showToast('오류가 발생했어. 잠시 후 다시 시도해줘.');
   } finally {
     btn.disabled = false;
