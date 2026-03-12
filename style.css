@@ -1,1326 +1,263 @@
-/* ===== Retro Pixel Art Style (8-bit Mario) ===== */
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
 :root {
-  /* Day theme - NES palette inspired */
-  --sky-color: #5c94fc;
-  --sky-bottom: #5c94fc;
-  --ground-green: #00a800;
-  --ground-brown: #c84c0c;
-  --ground-dark: #503000;
-
-  /* Night theme */
-  --night-sky: #000058;
-  --night-ground: #003800;
-
-  /* Mario colors */
-  --trunk-light: #d8a858;
-  --trunk-color: #a85000;
-  --trunk-dark: #503000;
-  --foliage-light: #00fc00;
-  --foliage-color: #00a800;
-  --foliage-dark: #005800;
-
-  --text-color: #383838;
-  --card-bg: #fcfcfc;
-  --primary-btn: #e44040;
-  --primary-btn-dark: #a00000;
-
-  /* Pixel size base */
-  --px: 4px;
+  --bg: #e8f2ff;
+  --wall: #f8f1e4;
+  --wall-line: #e2d7c4;
+  --deck: #b87f57;
+  --deck-dark: #8d5f40;
+  --grass: #95c98d;
+  --grass-dark: #6fa16a;
+  --text: #243042;
+  --primary: #2f6dd1;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  /* Disable anti-aliasing for crisp pixels */
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
+* { box-sizing: border-box; }
 body {
-  font-family: 'Press Start 2P', cursive;
   margin: 0;
-  padding: 0;
-  background-color: var(--sky-color);
-  color: var(--text-color);
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  transition: background-color 0.5s step-end;
-}
-
-body.night {
-  background-color: var(--night-sky);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 #app {
-  width: 100%;
-  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  position: relative;
 }
 
-/* ===== Top Header ===== */
 #top-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 20;
   text-align: center;
-  padding: 20px 16px;
-  z-index: 500;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 100%);
+  padding: 14px 12px 10px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.7), transparent);
 }
 
 #top-header h1 {
   margin: 0;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #fcfcfc;
-  text-shadow:
-    2px 2px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000;
-  letter-spacing: 0.05em;
+  font-size: 1.6rem;
+  font-weight: 900;
 }
 
 #status-line {
-  margin-top: 8px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.88rem;
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: #3c5577;
   font-weight: 600;
-  color: #fef9c3;
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.45);
 }
 
-/* ===== Ground Form Section ===== */
-#ground-form {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 400;
-  display: flex;
-  justify-content: center;
-  padding: 0 12px 14px;
-}
-
-/* ===== Tree Container ===== */
-#tree-container {
-  flex-grow: 1;
-  width: 100%;
+#scene {
+  margin-top: 74px;
+  flex: 1;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  overflow: visible;
-  padding-bottom: 80px;
-  --growth-factor: 0;
-  /* Dynamic min-height based on tree growth for scrolling */
-  min-height: calc(400px + 7200px * var(--growth-factor));
-}
-
-/* ===== Sky & Celestial Bodies ===== */
-#sky-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 70%;
-  z-index: 0;
-  pointer-events: none;
   overflow: hidden;
+  min-height: 560px;
 }
 
-#celestial-body {
+.sky-layer {
+  position: absolute; inset: 0;
+  background: linear-gradient(#a8d4ff 0%, #d9edff 58%, #f5fbff 100%);
+}
+
+.wall-layer {
   position: absolute;
-  top: 8%;
-  right: 12%;
-}
-
-/* Pixel Sun */
-.sun {
-  width: 64px;
-  height: 64px;
-  position: relative;
-  opacity: 1;
-  transition: opacity 0.3s step-end;
-}
-
-.sun::before {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  background: #fcfc00;
-  top: 16px;
-  left: 16px;
-  box-shadow:
-    /* Core */
-    0 0 0 0 #fcfc00,
-    /* Rays */
-    -16px 0 0 #fcac00,
-    16px 0 0 #fcac00,
-    0 -16px 0 #fcac00,
-    0 16px 0 #fcac00,
-    /* Corners */
-    -8px -8px 0 #fcfc00,
-    8px -8px 0 #fcfc00,
-    -8px 8px 0 #fcfc00,
-    8px 8px 0 #fcfc00,
-    /* Outer rays */
-    -24px 0 0 #fc6800,
-    24px 0 0 #fc6800,
-    0 -24px 0 #fc6800,
-    0 24px 0 #fc6800;
-}
-
-body.night .sun {
-  opacity: 0;
-}
-
-/* Pixel Moon */
-.moon {
-  width: 48px;
-  height: 48px;
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  opacity: 0;
-  transition: opacity 0.3s step-end;
-}
-
-.moon::before {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  background: #fcfc9c;
-  top: 8px;
-  left: 8px;
-  box-shadow:
-    /* Moon shape */
-    -8px 0 0 #fcfc9c,
-    8px 0 0 #fcfc9c,
-    0 -8px 0 #fcfc9c,
-    0 8px 0 #fcfc9c,
-    -8px -8px 0 #fcfccc,
-    8px 8px 0 #d8b800,
-    /* Craters */
-    0 0 0 #d8b800,
-    -8px 8px 0 #d8b800;
-}
-
-body.night .moon {
-  opacity: 1;
-}
-
-/* ===== Pixel Stars ===== */
-#stars-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s step-end;
-}
-
-body.night #stars-container {
-  opacity: 1;
-}
-
-.star {
-  position: absolute;
-  background: #fcfcfc;
-  animation: pixelTwinkle 1s steps(2) infinite;
-}
-
-.star.small {
-  width: 4px;
-  height: 4px;
-}
-
-.star.medium {
-  width: 4px;
-  height: 4px;
-  box-shadow:
-    -4px 0 0 #fcfcfc,
-    4px 0 0 #fcfcfc,
-    0 -4px 0 #fcfcfc,
-    0 4px 0 #fcfcfc;
-}
-
-.star.large {
-  width: 4px;
-  height: 4px;
-  box-shadow:
-    -4px 0 0 #fcfc00,
-    4px 0 0 #fcfc00,
-    0 -4px 0 #fcfc00,
-    0 4px 0 #fcfc00,
-    -4px -4px 0 #fcfcfc,
-    4px -4px 0 #fcfcfc,
-    -4px 4px 0 #fcfcfc,
-    4px 4px 0 #fcfcfc;
-}
-
-.star.sparkle {
-  width: 4px;
-  height: 4px;
-  background: #fcfc00;
-  box-shadow:
-    -8px 0 0 #fcfcfc,
-    8px 0 0 #fcfcfc,
-    0 -8px 0 #fcfcfc,
-    0 8px 0 #fcfcfc;
-}
-
-@keyframes pixelTwinkle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-/* ===== Pixel Clouds ===== */
-.cloud {
-  position: absolute;
-  width: 64px;
-  height: 24px;
-  background: #fcfcfc;
-  animation: floatCloud linear infinite;
-  box-shadow:
-    /* Top bumps */
-    8px -8px 0 #fcfcfc,
-    16px -16px 0 #fcfcfc,
-    24px -16px 0 #fcfcfc,
-    32px -16px 0 #fcfcfc,
-    40px -8px 0 #fcfcfc,
-    /* Outline */
-    0 -4px 0 #b8b8b8,
-    64px 0 0 #b8b8b8,
-    8px -12px 0 #b8b8b8,
-    16px -20px 0 #b8b8b8,
-    24px -20px 0 #b8b8b8,
-    32px -20px 0 #b8b8b8,
-    40px -12px 0 #b8b8b8;
-}
-
-.c1 {
-  top: 15%;
-  left: -100px;
-  animation-duration: 90s;
-}
-
-.c2 {
-  top: 25%;
-  left: -100px;
-  animation-duration: 120s;
-  animation-delay: 15s;
-  transform: scale(0.8);
-}
-
-.c3 {
-  top: 10%;
-  left: -100px;
-  animation-duration: 100s;
-  animation-delay: 40s;
-  transform: scale(0.6);
-}
-
-body.night .cloud {
-  background: #383858;
-  box-shadow:
-    8px -8px 0 #383858,
-    16px -16px 0 #383858,
-    24px -16px 0 #383858,
-    32px -16px 0 #383858,
-    40px -8px 0 #383858,
-    0 -4px 0 #282848,
-    64px 0 0 #282848,
-    8px -12px 0 #282848,
-    16px -20px 0 #282848,
-    24px -20px 0 #282848,
-    32px -20px 0 #282848,
-    40px -12px 0 #282848;
-}
-
-@keyframes floatCloud {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(100vw + 150px)); }
-}
-
-/* ===== Pixel Decorations ===== */
-#decorations {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 150px;
-  pointer-events: none;
-  z-index: 320;
-}
-
-/* Pixel Bushes */
-.bush {
-  position: absolute;
-  bottom: 78px;
-  width: 48px;
-  height: 24px;
-  background: var(--foliage-color);
-  box-shadow:
-    /* Shape */
-    8px -8px 0 var(--foliage-color),
-    16px -8px 0 var(--foliage-color),
-    24px -8px 0 var(--foliage-color),
-    32px -8px 0 var(--foliage-color),
-    16px -16px 0 var(--foliage-light),
-    24px -16px 0 var(--foliage-light),
-    /* Highlight */
-    8px -8px 0 var(--foliage-light),
-    /* Dark edge */
-    0 0 0 var(--foliage-dark),
-    48px 0 0 var(--foliage-dark),
-    40px -8px 0 var(--foliage-dark);
-}
-
-.b1 { left: 5%; }
-.b2 { right: 8%; }
-.b3 { left: 28%; transform: scale(0.7); }
-
-body.night .bush {
-  background: var(--foliage-dark);
-  box-shadow:
-    8px -8px 0 var(--foliage-dark),
-    16px -8px 0 var(--foliage-dark),
-    24px -8px 0 var(--foliage-dark),
-    32px -8px 0 var(--foliage-dark),
-    16px -16px 0 var(--foliage-color),
-    24px -16px 0 var(--foliage-color),
-    8px -8px 0 var(--foliage-color),
-    0 0 0 #002800,
-    48px 0 0 #002800,
-    40px -8px 0 #002800;
-}
-
-/* Pixel Flowers */
-.flower {
-  position: absolute;
-  bottom: 82px;
-  width: 8px;
-  height: 8px;
-  background: #fc0000;
-  animation: pixelBounce 1s steps(4) infinite;
-}
-
-.flower::before {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 12px;
-  background: var(--foliage-color);
-  top: 8px;
-  left: 2px;
-}
-
-.flower::after {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: #fcfc00;
-  top: 0;
-  left: 0;
-  box-shadow:
-    -8px 0 0 #fc0000,
-    8px 0 0 #fc0000,
-    0 -8px 0 #fc0000,
-    0 8px 0 #fc0000;
-}
-
-.f1 { left: 12%; }
-.f2 { left: 38%; }
-.f2::after { box-shadow: -8px 0 0 #0078fc, 8px 0 0 #0078fc, 0 -8px 0 #0078fc, 0 8px 0 #0078fc; }
-.f3 { right: 18%; }
-.f3::after { box-shadow: -8px 0 0 #fc78fc, 8px 0 0 #fc78fc, 0 -8px 0 #fc78fc, 0 8px 0 #fc78fc; }
-.f4 { right: 32%; }
-.f4::after { box-shadow: -8px 0 0 #fcfcfc, 8px 0 0 #fcfcfc, 0 -8px 0 #fcfcfc, 0 8px 0 #fcfcfc; }
-
-@keyframes pixelBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-body.night .flower::before {
-  background: var(--foliage-dark);
-}
-
-/* ===== Pixel Tree Trunk ===== */
-.tree-trunk {
-  width: calc(30px + 170px * var(--growth-factor));
-  height: calc(110px + 1200px * var(--growth-factor));
-  background: var(--trunk-color);
-  position: absolute;
-  bottom: 80px;
-  z-index: 1;
-  border-radius: 6px 6px 2px 2px;
-  /* Pixel shading */
-  box-shadow:
-    inset 8px 0 0 var(--trunk-light),
-    inset -8px 0 0 var(--trunk-dark),
-    inset 16px 0 0 var(--trunk-light);
-}
-
-/* ===== Pixel Tree Foliage ===== */
-.tree-foliage {
-  --width: calc(220px + 900px * var(--growth-factor));
-  --height: calc(240px + 1200px * var(--growth-factor));
-  width: var(--width);
-  height: var(--height);
-  bottom: calc(170px + 960px * var(--growth-factor));
-  position: absolute;
-  z-index: 2;
-  background: var(--foliage-color);
-  /* Rounded crown shape */
-  clip-path: polygon(
-    20% 12%, 35% 4%, 50% 0%, 65% 4%, 80% 12%,
-    90% 24%, 97% 40%, 100% 56%,
-    97% 72%, 90% 86%, 78% 95%,
-    62% 100%, 38% 100%, 22% 95%,
-    10% 86%, 3% 72%, 0% 56%,
-    3% 40%, 10% 24%
+  left: 0; right: 0; top: 18%; height: 36%;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--wall) 0 26px,
+    var(--wall-line) 26px 28px
   );
-  box-shadow:
-    inset 14px 14px 0 var(--foliage-light),
-    inset -14px -14px 0 var(--foliage-dark),
-    inset 28px 8px 0 var(--foliage-light);
-  animation: pixelSway 2s steps(4) infinite;
+  border-top: 6px solid #d4c6af;
+  border-bottom: 6px solid #d4c6af;
 }
 
-/* Top foliage bump */
-.tree-foliage::before {
-  content: '';
+.deck-layer {
   position: absolute;
-  width: 64%;
-  height: 36%;
-  background: var(--foliage-color);
-  top: -16%;
-  left: 18%;
-  clip-path: polygon(
-    18% 100%, 82% 100%,
-    94% 58%, 98% 28%,
-    80% 0%, 20% 0%,
-    2% 28%, 6% 58%
-  );
-  box-shadow:
-    inset 8px 8px 0 var(--foliage-light),
-    inset -8px -8px 0 var(--foliage-dark);
-}
-
-.tree-foliage::after {
-  content: '';
-  position: absolute;
-  width: 28%;
-  height: 22%;
-  background: var(--foliage-light);
-  top: -30%;
-  left: 36%;
-  clip-path: polygon(
-    25% 100%, 75% 100%,
-    100% 50%, 75% 0%,
-    25% 0%, 0% 50%
-  );
-}
-
-body.night .tree-foliage,
-body.night .tree-foliage::before {
-  background: var(--foliage-dark);
-  box-shadow:
-    inset 16px 16px 0 var(--foliage-color),
-    inset -16px -16px 0 #002800;
-}
-
-body.night .tree-foliage::after {
-  background: var(--foliage-color);
-}
-
-@keyframes pixelSway {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  75% { transform: translateX(2px); }
-}
-
-/* ===== Fruits Container ===== */
-#fruits-container {
-  position: absolute;
-  /* Match foliage position and size exactly */
-  width: calc(220px + 900px * var(--growth-factor));
-  height: calc(240px + 1200px * var(--growth-factor));
-  bottom: calc(170px + 960px * var(--growth-factor));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  pointer-events: none;
-  overflow: visible;
-}
-
-#fruits-container .fruit {
-  pointer-events: auto;
-}
-
-/* ===== Pixel Ground ===== */
-#ground-container {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 80px;
-  background: var(--ground-green);
-  z-index: 300;
-  /* Brick pattern */
-  box-shadow:
-    inset 0 -10px 0 var(--ground-brown),
-    inset 0 -20px 0 var(--ground-brown),
-    inset 0 -30px 0 var(--ground-brown),
-    inset 0 -40px 0 var(--ground-brown),
-    inset 0 -50px 0 var(--ground-dark),
-    inset 0 -60px 0 var(--ground-dark),
-    inset 0 -70px 0 var(--ground-dark),
-    inset 0 -80px 0 var(--ground-dark);
-}
-
-/* Grass top edge */
-#ground-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
+  left: 0; right: 0; bottom: 20%; height: 20%;
   background: repeating-linear-gradient(
     90deg,
-    var(--foliage-light) 0px,
-    var(--foliage-light) 8px,
-    var(--ground-green) 8px,
-    var(--ground-green) 16px
+    var(--deck) 0 42px,
+    var(--deck-dark) 42px 46px
   );
+  box-shadow: inset 0 8px rgba(255,255,255,0.12), inset 0 -8px rgba(0,0,0,0.08);
 }
 
-body.night #ground-container {
-  background: var(--night-ground);
-  box-shadow:
-    inset 0 -10px 0 #402000,
-    inset 0 -20px 0 #402000,
-    inset 0 -30px 0 #402000,
-    inset 0 -40px 0 #402000,
-    inset 0 -50px 0 #281000,
-    inset 0 -60px 0 #281000,
-    inset 0 -70px 0 #281000,
-    inset 0 -80px 0 #281000;
-}
-
-body.night #ground-container::before {
+.garden-layer {
+  position: absolute;
+  left: 0; right: 0; bottom: 0; height: 25%;
   background: repeating-linear-gradient(
     90deg,
-    var(--foliage-color) 0px,
-    var(--foliage-color) 8px,
-    var(--night-ground) 8px,
-    var(--night-ground) 16px
+    var(--grass) 0 34px,
+    var(--grass-dark) 34px 38px
   );
+  border-top: 5px solid #5d8f58;
 }
 
-/* ===== Pixel Fruits ===== */
-/* Pixel Apple - Square Blocky Style */
-.fruit {
+#cat-layer {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.5rem;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-  z-index: 200;
-  animation: pixelAppleFloat 1.5s steps(4) infinite;
-  white-space: nowrap;
-  background: #fc0000;
-  image-rendering: pixelated;
-  /* Blocky pixel shape */
-  clip-path: polygon(
-    4px 0, calc(100% - 4px) 0,
-    100% 4px, 100% calc(100% - 4px),
-    calc(100% - 4px) 100%, 4px 100%,
-    0 calc(100% - 4px), 0 4px
-  );
-}
-
-/* Pixel stem */
-.fruit::before {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background: #603000;
-}
-
-/* Pixel leaf */
-.fruit::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: 55%;
-  width: 8px;
-  height: 4px;
-  background: #00a800;
-  clip-path: polygon(0 100%, 100% 0, 100% 100%);
-}
-
-/* Different flat apple colors - Mario palette */
-.fruit:nth-child(6n+1) { background: #fc0000; }
-.fruit:nth-child(6n+2) { background: #00b800; }
-.fruit:nth-child(6n+3) { background: #e8d000; color: #000; text-shadow: none; }
-.fruit:nth-child(6n+4) { background: #fc68b8; }
-.fruit:nth-child(6n+5) { background: #00c850; }
-.fruit:nth-child(6n+6) { background: #fca000; color: #000; text-shadow: none; }
-
-.fruit:hover {
-  transform: scale(1.3);
-  z-index: 210;
-}
-
-@keyframes pixelAppleFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-/* ===== Message Form ===== */
-#message-form {
-  display: flex;
-  gap: 6px;
-  width: 100%;
-  max-width: 440px;
-  padding: 10px 18px;
-  background: rgba(255, 255, 255, 0.95);
-  align-items: center;
-  border-radius: 6px;
-  box-shadow:
-    inset 3px 3px 0 #f0f0f0,
-    inset -3px -3px 0 #b0b0b0;
-}
-
-#username {
-  padding: 8px 10px;
-  border: none;
-  width: 70px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background: #fcfcfc;
-  border-radius: 3px;
-  box-shadow:
-    inset 2px 2px 0 #a0a0a0,
-    inset -2px -2px 0 #fcfcfc,
-    inset 3px 3px 0 #707070;
-}
-
-#username:focus {
-  outline: none;
-  background: #fffff8;
-}
-
-#usermessage {
-  flex-grow: 1;
-  padding: 8px 10px;
-  border: none;
-  resize: none;
-  height: 34px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background: #fcfcfc;
-  border-radius: 3px;
-  box-shadow:
-    inset 2px 2px 0 #a0a0a0,
-    inset -2px -2px 0 #fcfcfc,
-    inset 3px 3px 0 #707070;
-}
-
-#usermessage:focus {
-  outline: none;
-  background: #fffff8;
-}
-
-button[type="submit"] {
-  background: var(--primary-btn);
-  color: #fcfcfc;
-  border: none;
-  padding: 0 12px;
-  height: 30px;
-  cursor: pointer;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  white-space: nowrap;
-  border-radius: 3px;
-  text-shadow: 1px 1px 0 #600000;
-  box-shadow:
-    inset 2px 2px 0 #fc8080,
-    inset -2px -2px 0 var(--primary-btn-dark);
-}
-
-button[type="submit"]:hover {
-  background: #fc5050;
-}
-
-button[type="submit"]:active {
-  transform: translateY(1px);
-  box-shadow:
-    inset 2px 2px 0 var(--primary-btn-dark),
-    inset -2px -2px 0 #fc8080;
-}
-
-button[type="submit"]:disabled {
-  background: #787878;
-  box-shadow:
-    inset 2px 2px 0 #909090,
-    inset -2px -2px 0 #505050;
-  cursor: not-allowed;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 600px) {
-  #top-header h1 {
-    font-size: 1.3rem;
-  }
-
-  #ground-container {
-    height: 60px;
-  }
-
-  #ground-form {
-    padding: 0 8px 8px;
-  }
-
-  #message-form {
-    flex-wrap: nowrap;
-    padding: 6px 10px;
-    gap: 4px;
-    max-width: 100%;
-  }
-
-  #username {
-    width: 50px;
-    padding: 6px 8px;
-    font-size: 0.7rem;
-  }
-
-  #usermessage {
-    flex: 1;
-    min-width: 0;
-    padding: 6px 8px;
-    height: 28px;
-    font-size: 0.7rem;
-  }
-
-  button[type="submit"] {
-    padding: 0 10px;
-    height: 28px;
-    font-size: 0.65rem;
-  }
-
-  .bush, .flower {
-    bottom: 60px;
-  }
-
-  #cats-container {
-    bottom: 49px;
-  }
-
-  .tree-trunk {
-    bottom: 60px;
-  }
-
-  .tree-foliage {
-    bottom: calc(150px + 960px * var(--growth-factor));
-  }
-
-  #fruits-container {
-    bottom: calc(150px + 960px * var(--growth-factor));
-  }
-
-  .fruit {
-    width: 20px;
-    height: 20px;
-    font-size: 0.45rem;
-  }
-}
-
-/* ===== Placeholder ===== */
-::placeholder {
-  color: #999;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.85rem;
-  font-weight: 400;
-}
-
-/* ===== Selection ===== */
-::selection {
-  background: var(--primary-btn);
-  color: #fcfcfc;
-}
-
-/* ===== Message Modal ===== */
-.message-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: var(--card-bg);
-  padding: 24px 32px;
-  text-align: center;
-  max-width: 300px;
-  width: 90%;
-  box-shadow:
-    8px 0 0 #b8b8b8,
-    0 8px 0 #b8b8b8,
-    8px 8px 0 #787878,
-    -4px 0 0 #fcfcfc,
-    0 -4px 0 #fcfcfc,
-    12px 12px 0 #383838;
-}
-
-.modal-name {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--primary-btn);
-  margin: 0 0 12px;
-}
-
-.modal-message {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--text-color);
-  margin: 0 0 24px;
-  line-height: 1.6;
-  word-break: keep-all;
-}
-
-.modal-close {
-  background: var(--primary-btn);
-  color: #fcfcfc;
-  border: none;
-  padding: 12px 28px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  text-shadow: 1px 1px 0 #600000;
-  box-shadow:
-    4px 0 0 var(--primary-btn-dark),
-    0 4px 0 var(--primary-btn-dark),
-    4px 4px 0 #600000,
-    inset 4px 4px 0 #fc8080;
-}
-
-.modal-close:hover {
-  background: #fc5050;
-}
-
-.modal-close:active {
-  transform: translate(2px, 2px);
-  box-shadow:
-    2px 0 0 var(--primary-btn-dark),
-    0 2px 0 var(--primary-btn-dark);
-}
-
-/* ===== Toast ===== */
-.toast {
-  position: fixed;
-  bottom: 130px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #282828;
-  color: #fcfcfc;
-  padding: 14px 24px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: 4px;
-  z-index: 1000;
-  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
-  box-shadow:
-    4px 0 0 #000,
-    0 4px 0 #000,
-    4px 4px 0 #000,
-    -4px 0 0 #484848,
-    0 -4px 0 #484848;
-}
-
-@keyframes toastIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-@keyframes toastOut {
-  from {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-16px);
-  }
-}
-
-/* ===== Pixel Cats ===== */
-#cats-container {
-  position: fixed;
-  bottom: 78px;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  pointer-events: none;
-  z-index: 350;
-  overflow: hidden;
+  inset: 0;
+  z-index: 5;
 }
 
 .cat {
   position: absolute;
-  bottom: 0;
-  left: -50px;
-  width: 32px;
-  height: 24px;
-  visibility: hidden;
+  width: 74px;
+  height: 52px;
+  border-radius: 34px 34px 28px 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.18);
 }
 
-.cat.visible {
-  visibility: visible;
-}
+.cat:hover { transform: scale(1.06); }
 
-/* Yellow Cat */
-.yellow-cat .cat-body {
+.cat::before {
+  content: '';
   position: absolute;
-  bottom: 0;
-  left: 4px;
-  width: 20px;
-  height: 12px;
-  background: #fcb800;
-  box-shadow:
-    inset 4px 4px 0 #fcd848,
-    inset -4px -4px 0 #c89000;
-}
-
-.yellow-cat .cat-face {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  width: 16px;
-  height: 12px;
-  background: #fcb800;
-  box-shadow:
-    inset 4px 4px 0 #fcd848,
-    inset -4px -4px 0 #c89000;
-}
-
-.yellow-cat .cat-ear.left {
-  position: absolute;
-  bottom: 18px;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 6px solid #fcb800;
-}
-
-.yellow-cat .cat-ear.right {
-  position: absolute;
-  bottom: 18px;
+  top: -16px;
   left: 8px;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 6px solid #fcb800;
-}
-
-.yellow-cat .cat-eye.left {
-  position: absolute;
-  top: 4px;
-  left: 3px;
-  width: 4px;
-  height: 4px;
-  background: #000;
-}
-
-.yellow-cat .cat-eye.right {
-  position: absolute;
-  top: 4px;
-  right: 3px;
-  width: 4px;
-  height: 4px;
-  background: #000;
-}
-
-.yellow-cat .cat-tail {
-  position: absolute;
-  bottom: 8px;
-  right: 0;
-  width: 8px;
-  height: 4px;
-  background: #fcb800;
-  transform-origin: left center;
-  animation: tailWag 0.5s steps(2) infinite;
-}
-
-/* Black Cat */
-.black-cat .cat-body {
-  position: absolute;
-  bottom: 0;
-  left: 4px;
-  width: 20px;
-  height: 12px;
-  background: #282828;
-  box-shadow:
-    inset 4px 4px 0 #484848,
-    inset -4px -4px 0 #101010;
-}
-
-.black-cat .cat-face {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
   width: 16px;
-  height: 12px;
-  background: #282828;
-  box-shadow:
-    inset 4px 4px 0 #484848,
-    inset -4px -4px 0 #101010;
+  height: 18px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: inherit;
 }
 
-.black-cat .cat-ear.left {
+.cat::after {
+  content: '';
   position: absolute;
-  bottom: 18px;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 6px solid #282828;
+  top: -16px;
+  right: 8px;
+  width: 16px;
+  height: 18px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: inherit;
 }
 
-.black-cat .cat-ear.right {
+.cat .tail {
   position: absolute;
-  bottom: 18px;
-  left: 8px;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 6px solid #282828;
-}
-
-.black-cat .cat-eye.left {
-  position: absolute;
-  top: 4px;
-  left: 3px;
-  width: 4px;
-  height: 4px;
-  background: #fcfc00;
-}
-
-.black-cat .cat-eye.right {
-  position: absolute;
-  top: 4px;
-  right: 3px;
-  width: 4px;
-  height: 4px;
-  background: #fcfc00;
-}
-
-.black-cat .cat-tail {
-  position: absolute;
-  bottom: 8px;
-  right: 0;
-  width: 8px;
-  height: 4px;
-  background: #282828;
-  transform-origin: left center;
-  animation: tailWag 0.5s steps(2) infinite;
-}
-
-@keyframes tailWag {
-  0%, 100% { transform: rotate(-10deg); }
-  50% { transform: rotate(10deg); }
-}
-
-/* Cat walking animation */
-.cat.walking {
-  animation: catWalk 20s linear forwards;
-  transform: scaleX(-1); /* Face right when walking right */
-}
-
-.cat.walking.reverse {
-  animation: catWalkReverse 20s linear forwards;
-  transform: scaleX(1); /* Face left when walking left */
-}
-
-.cat.walking .cat-body,
-.cat.walking .cat-face {
-  animation: catBounce 0.4s steps(2) infinite;
-}
-
-/* Walk to sleep position */
-.cat.walking-to-sleep {
-  animation: catWalkToSleep 10s linear forwards;
-  transform: scaleX(-1);
-}
-
-.cat.walking-to-sleep.from-right {
-  animation: catWalkToSleepFromRight 10s linear forwards;
-  transform: scaleX(1);
-}
-
-.cat.walking-to-sleep .cat-body,
-.cat.walking-to-sleep .cat-face {
-  animation: catBounce 0.4s steps(2) infinite;
-}
-
-/* Walk away after sleep */
-.cat.walking-away {
-  animation: catWalkAway 10s linear forwards;
-  transform: scaleX(1);
-}
-
-.cat.walking-away.to-right {
-  animation: catWalkAwayToRight 10s linear forwards;
-  transform: scaleX(-1);
-}
-
-.cat.walking-away .cat-body,
-.cat.walking-away .cat-face {
-  animation: catBounce 0.4s steps(2) infinite;
-}
-
-@keyframes catWalk {
-  0% { left: -40px; }
-  100% { left: calc(100% + 40px); }
-}
-
-@keyframes catWalkReverse {
-  0% { left: calc(100% + 40px); }
-  100% { left: -40px; }
-}
-
-@keyframes catWalkToSleep {
-  0% { left: -40px; }
-  100% { left: var(--sleep-pos); }
-}
-
-@keyframes catWalkToSleepFromRight {
-  0% { left: calc(100% + 40px); }
-  100% { left: var(--sleep-pos); }
-}
-
-@keyframes catWalkAway {
-  0% { left: var(--sleep-pos); }
-  100% { left: -40px; }
-}
-
-@keyframes catWalkAwayToRight {
-  0% { left: var(--sleep-pos); }
-  100% { left: calc(100% + 40px); }
-}
-
-@keyframes catBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-/* Cat sleeping */
-.cat.sleeping {
-  animation: none;
-}
-
-.cat.sleeping .cat-body {
-  width: 24px;
-  height: 8px;
-  animation: sleepBreathe 2s steps(2) infinite;
-}
-
-.cat.sleeping .cat-face {
-  bottom: 4px;
-  width: 14px;
+  right: -10px;
+  top: 10px;
+  width: 20px;
   height: 10px;
+  border-radius: 10px;
+  background: inherit;
 }
 
-.cat.sleeping .cat-eye.left,
-.cat.sleeping .cat-eye.right {
-  height: 2px;
-  top: 5px;
-}
-
-.cat.sleeping .cat-tail {
-  bottom: 4px;
-  animation: none;
-  transform: rotate(-20deg);
-}
-
-.cat.sleeping .cat-ear.left,
-.cat.sleeping .cat-ear.right {
-  bottom: 12px;
-}
-
-/* Zzz animation for sleeping cat */
-.cat.sleeping::after {
-  content: 'z';
+.cat .collar {
   position: absolute;
-  top: -8px;
-  right: 4px;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 6px;
-  color: #fcfcfc;
-  text-shadow: 1px 1px 0 #000;
-  animation: zzz 1s steps(2) infinite;
+  left: 6px;
+  right: 6px;
+  top: 16px;
+  height: 10px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.2);
+  color: #fff;
+  font-size: 9px;
+  line-height: 10px;
+  text-align: center;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 4px;
 }
 
-@keyframes sleepBreathe {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.9); }
+.cat.walk { animation: walkCycle 6s ease-in-out infinite; }
+.cat.sleep { animation: sleepCycle 3.2s ease-in-out infinite; }
+.cat.lie { transform: scaleY(0.78); }
+.cat.eat { animation: eatCycle 1.2s ease-in-out infinite; }
+
+@keyframes walkCycle {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(10px); }
+  50% { transform: translateX(0); }
+  75% { transform: translateX(-10px); }
+}
+@keyframes sleepCycle {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+@keyframes eatCycle {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
 }
 
-@keyframes zzz {
-  0%, 100% { opacity: 1; transform: translateY(0); }
-  50% { opacity: 0.5; transform: translateY(-4px); }
+#ground-form {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  padding: 8px 10px 12px;
 }
 
+#message-form {
+  width: min(680px, 100%);
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 6px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid #d7e3f2;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+#username, #usermessage, button[type="submit"] {
+  border: 1px solid #c7d7ea;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#username, #usermessage { padding: 8px; }
+#usermessage { resize: none; height: 36px; }
+
+button[type="submit"] {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0 12px;
+  font-weight: 700;
+}
+
+.message-modal {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-content {
+  width: min(92%, 420px);
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+.modal-name { margin: 0; font-size: 1rem; font-weight: 800; color: #2f6dd1; }
+.modal-message { margin: 10px 0 16px; font-size: 1.05rem; line-height: 1.5; }
+.modal-close {
+  border: none; border-radius: 10px; padding: 10px 14px;
+  background: var(--primary); color: #fff; font-weight: 700;
+}
+
+.toast {
+  position: fixed;
+  left: 50%; transform: translateX(-50%);
+  bottom: 88px;
+  z-index: 120;
+  background: #1f2937;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 700px) {
+  #scene { margin-top: 78px; min-height: 520px; }
+  #top-header h1 { font-size: 1.35rem; }
+  #status-line { font-size: 0.86rem; }
+  .cat { width: 62px; height: 44px; }
+  #message-form { grid-template-columns: 76px 1fr auto; }
+  #username, #usermessage, button[type="submit"] { font-size: 12.5px; }
+}
