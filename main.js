@@ -36,6 +36,9 @@ const btn = form.querySelector('button');
 const starsContainer = document.getElementById('stars-container');
 const statusLine = document.getElementById('status-line');
 
+const RATE_LIMIT_SECONDS = 15;
+const LAST_SUBMIT_KEY = 'hopetree_last_submit_at';
+
 // --- Day/Night Cycle based on Korean Time (KST, UTC+9) ---
 
 function getKoreanTime() {
@@ -353,6 +356,18 @@ function setStatusLine(text) {
   statusLine.textContent = text;
 }
 
+function containsBlockedPattern(text) {
+  const lowered = text.toLowerCase();
+  return lowered.includes('http://') || lowered.includes('https://') || lowered.includes('www.');
+}
+
+function getRemainingCooldownSeconds() {
+  const last = Number(localStorage.getItem(LAST_SUBMIT_KEY) || 0);
+  if (!last) return 0;
+  const elapsed = (Date.now() - last) / 1000;
+  return Math.max(0, Math.ceil(RATE_LIMIT_SECONDS - elapsed));
+}
+
 // Toast notification
 function showToast(message) {
   const existing = document.querySelector('.toast');
@@ -403,6 +418,17 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
+  if (containsBlockedPattern(name) || containsBlockedPattern(message)) {
+    showToast('링크는 입력할 수 없어. 마음만 적어줘.');
+    return;
+  }
+
+  const cooldownLeft = getRemainingCooldownSeconds();
+  if (cooldownLeft > 0) {
+    showToast(`${cooldownLeft}초 뒤에 다시 남겨줘.`);
+    return;
+  }
+
   // Disable button while sending
   btn.disabled = true;
   btn.textContent = "달리는 중...";
@@ -414,6 +440,8 @@ form.addEventListener('submit', async (e) => {
       message,
       timestamp: serverTimestamp()
     });
+
+    localStorage.setItem(LAST_SUBMIT_KEY, String(Date.now()));
 
     // Success
     form.reset();
