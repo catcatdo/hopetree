@@ -33,6 +33,26 @@ const RATE_LIMIT_SECONDS = 15;
 const LAST_SUBMIT_KEY = 'hopetree_last_submit_at';
 const MAX_RENDER_CATS = window.innerWidth < 700 ? 8 : 12;
 
+const CAT_SPRITES = [
+  { x: 20, y: 25, w: 170, h: 135 },
+  { x: 180, y: 35, w: 190, h: 125 },
+  { x: 350, y: 25, w: 210, h: 140 },
+  { x: 560, y: 20, w: 200, h: 145 },
+  { x: 910, y: 20, w: 200, h: 145 },
+  { x: 20, y: 150, w: 200, h: 150 },
+  { x: 250, y: 155, w: 220, h: 145 },
+  { x: 690, y: 150, w: 170, h: 150 },
+  { x: 930, y: 150, w: 200, h: 160 },
+  { x: 20, y: 285, w: 210, h: 150 },
+  { x: 300, y: 280, w: 200, h: 150 },
+  { x: 630, y: 280, w: 200, h: 150 },
+  { x: 930, y: 280, w: 200, h: 170 },
+  { x: 20, y: 420, w: 230, h: 170 },
+  { x: 280, y: 430, w: 220, h: 160 },
+  { x: 620, y: 430, w: 280, h: 160 },
+  { x: 930, y: 420, w: 200, h: 170 }
+];
+
 function showToast(message) {
   const existing = document.querySelector('.toast');
   if (existing) existing.remove();
@@ -81,17 +101,6 @@ function seededPick(docs, limit) {
     .map(x => x.doc);
 }
 
-function catPalette(type) {
-  const p = [
-    ['#f59e0b', '#b45309'], // 치즈
-    ['#111827', '#374151'], // 턱시도
-    ['#f97316', '#7c2d12'], // 주황
-    ['#6b7280', '#374151'], // 회색
-    ['#d1d5db', '#6b7280']  // 실버
-  ];
-  return p[type % p.length];
-}
-
 function catBehavior(seed) {
   const list = ['walk', 'sleep', 'eat', 'lie'];
   return list[seed % list.length];
@@ -114,19 +123,24 @@ function renderCats(docs) {
   pick.forEach((doc, i) => {
     const data = doc.data();
     const seed = hashString(doc.id + daySeed());
-    const [c1, c2] = catPalette(seed);
     const behavior = catBehavior(seed);
     const pos = catPosition(i, pick.length);
+    const sp = CAT_SPRITES[seed % CAT_SPRITES.length];
+    const renderW = Math.round(sp.w * 0.46);
+    const renderH = Math.round(sp.h * 0.46);
 
     const cat = document.createElement('button');
     cat.type = 'button';
     cat.className = `cat ${behavior}`;
     cat.style.left = `${pos.x}%`;
     cat.style.top = `${pos.y}%`;
-    cat.style.background = `linear-gradient(140deg, ${c1}, ${c2})`;
+    cat.style.setProperty('--cat-w', `${renderW}px`);
+    cat.style.setProperty('--cat-h', `${renderH}px`);
+    cat.style.setProperty('--sx', `${sp.x}`);
+    cat.style.setProperty('--sy', `${sp.y}`);
     cat.title = `${data.name || '익명'}`;
     cat.innerHTML = `
-      <div class="tail"></div>
+      <div class="sprite"></div>
       <div class="collar">${(data.name || '익명').slice(0, 8)}</div>
     `;
     cat.onclick = () => showMessage(data.name || '익명', data.message || '');

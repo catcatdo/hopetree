@@ -103,65 +103,44 @@ body {
 
 .cat {
   position: absolute;
-  width: 74px;
-  height: 52px;
-  border-radius: 34px 34px 28px 28px;
+  width: var(--cat-w, 86px);
+  height: var(--cat-h, 64px);
   cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
   transition: transform 0.2s ease;
-  box-shadow: 0 6px 10px rgba(0,0,0,0.18);
 }
 
 .cat:hover { transform: scale(1.06); }
 
-.cat::before {
-  content: '';
+.cat .sprite {
   position: absolute;
-  top: -16px;
-  left: 8px;
-  width: 16px;
-  height: 18px;
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  background: inherit;
-}
-
-.cat::after {
-  content: '';
-  position: absolute;
-  top: -16px;
-  right: 8px;
-  width: 16px;
-  height: 18px;
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  background: inherit;
-}
-
-.cat .tail {
-  position: absolute;
-  right: -10px;
-  top: 10px;
-  width: 20px;
-  height: 10px;
-  border-radius: 10px;
-  background: inherit;
+  inset: 0;
+  background-image: url('./assets/cats/sheet.png');
+  background-repeat: no-repeat;
+  background-size: 1200px 615px;
+  background-position: calc(var(--sx, 0) * -1px) calc(var(--sy, 0) * -1px);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
 }
 
 .cat .collar {
   position: absolute;
-  left: 6px;
-  right: 6px;
-  top: 16px;
-  height: 10px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.2);
+  left: 10%;
+  right: 10%;
+  bottom: -8px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(30,41,59,0.86);
   color: #fff;
-  font-size: 9px;
-  line-height: 10px;
+  font-size: 10px;
+  line-height: 16px;
   text-align: center;
   font-weight: 700;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding: 0 4px;
+  padding: 0 6px;
 }
 
 .cat.walk { animation: walkCycle 6s ease-in-out infinite; }
@@ -257,7 +236,7 @@ button[type="submit"] {
   #scene { margin-top: 78px; min-height: 520px; }
   #top-header h1 { font-size: 1.35rem; }
   #status-line { font-size: 0.86rem; }
-  .cat { width: 62px; height: 44px; }
+  .cat { width: calc(var(--cat-w, 86px) * 0.8); height: calc(var(--cat-h, 64px) * 0.8); }
   #message-form { grid-template-columns: 76px 1fr auto; }
   #username, #usermessage, button[type="submit"] { font-size: 12.5px; }
 }
