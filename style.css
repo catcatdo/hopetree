@@ -456,12 +456,13 @@ body.night .flower::before {
 
 /* ===== Pixel Tree Trunk ===== */
 .tree-trunk {
-  width: calc(24px + 256px * var(--growth-factor));
-  height: calc(80px + 2400px * var(--growth-factor));
+  width: calc(30px + 170px * var(--growth-factor));
+  height: calc(110px + 1200px * var(--growth-factor));
   background: var(--trunk-color);
   position: absolute;
   bottom: 80px;
   z-index: 1;
+  border-radius: 6px 6px 2px 2px;
   /* Pixel shading */
   box-shadow:
     inset 8px 0 0 var(--trunk-light),
@@ -471,29 +472,27 @@ body.night .flower::before {
 
 /* ===== Pixel Tree Foliage ===== */
 .tree-foliage {
-  --width: calc(150px + 2000px * var(--growth-factor));
-  --height: calc(180px + 4800px * var(--growth-factor));
+  --width: calc(220px + 900px * var(--growth-factor));
+  --height: calc(240px + 1200px * var(--growth-factor));
   width: var(--width);
   height: var(--height);
-  bottom: calc(140px + 1920px * var(--growth-factor));
+  bottom: calc(170px + 960px * var(--growth-factor));
   position: absolute;
   z-index: 2;
   background: var(--foliage-color);
-  /* Pixel circle shape using clip-path */
+  /* Rounded crown shape */
   clip-path: polygon(
-    30% 0%, 70% 0%,
-    85% 10%, 95% 25%,
-    100% 40%, 100% 60%,
-    95% 75%, 85% 90%,
-    70% 100%, 30% 100%,
-    15% 90%, 5% 75%,
-    0% 60%, 0% 40%,
-    5% 25%, 15% 10%
+    20% 12%, 35% 4%, 50% 0%, 65% 4%, 80% 12%,
+    90% 24%, 97% 40%, 100% 56%,
+    97% 72%, 90% 86%, 78% 95%,
+    62% 100%, 38% 100%, 22% 95%,
+    10% 86%, 3% 72%, 0% 56%,
+    3% 40%, 10% 24%
   );
   box-shadow:
-    inset 16px 16px 0 var(--foliage-light),
-    inset -16px -16px 0 var(--foliage-dark),
-    inset 32px 8px 0 var(--foliage-light);
+    inset 14px 14px 0 var(--foliage-light),
+    inset -14px -14px 0 var(--foliage-dark),
+    inset 28px 8px 0 var(--foliage-light);
   animation: pixelSway 2s steps(4) infinite;
 }
 
@@ -501,16 +500,16 @@ body.night .flower::before {
 .tree-foliage::before {
   content: '';
   position: absolute;
-  width: 60%;
-  height: 40%;
+  width: 64%;
+  height: 36%;
   background: var(--foliage-color);
-  top: -20%;
-  left: 20%;
+  top: -16%;
+  left: 18%;
   clip-path: polygon(
-    20% 100%, 80% 100%,
-    95% 50%, 100% 20%,
+    18% 100%, 82% 100%,
+    94% 58%, 98% 28%,
     80% 0%, 20% 0%,
-    0% 20%, 5% 50%
+    2% 28%, 6% 58%
   );
   box-shadow:
     inset 8px 8px 0 var(--foliage-light),
@@ -520,11 +519,11 @@ body.night .flower::before {
 .tree-foliage::after {
   content: '';
   position: absolute;
-  width: 30%;
-  height: 25%;
+  width: 28%;
+  height: 22%;
   background: var(--foliage-light);
-  top: -35%;
-  left: 35%;
+  top: -30%;
+  left: 36%;
   clip-path: polygon(
     25% 100%, 75% 100%,
     100% 50%, 75% 0%,
@@ -554,9 +553,9 @@ body.night .tree-foliage::after {
 #fruits-container {
   position: absolute;
   /* Match foliage position and size exactly */
-  width: calc(150px + 2000px * var(--growth-factor));
-  height: calc(180px + 4800px * var(--growth-factor));
-  bottom: calc(140px + 1920px * var(--growth-factor));
+  width: calc(220px + 900px * var(--growth-factor));
+  height: calc(240px + 1200px * var(--growth-factor));
+  bottom: calc(170px + 960px * var(--growth-factor));
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
