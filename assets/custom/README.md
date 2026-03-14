@@ -1,19 +1,12 @@
 # custom assets
 
-여기에 사용자 커스텀 이미지를 넣어줘.
+희망나무 시즌2에서 사용자 자산은 아래 경로를 사용한다.
 
 ## 배경
-- 경로: `assets/custom/bg/yard.jpg` (또는 `.png`, `.webp`)
-- 우선순위: jpg → png → webp
-
-## 고양이
-- 경로: `assets/custom/cats/`
-- 파일명 예시:
-  - `cat01.gif`
-  - `cat02.png`
-  - `cat03.webp`
-  - ...
-- 권장: 투명 배경 PNG/GIF, 가로 180~320px
+- 경로: `assets/custom/bg/yard.jpg` 또는 `yard.png`, `yard.webp`
+- 우선순위: `jpg -> png -> webp`
+- 권장: 최소 `1920x1080`
 
 ## 참고
-- GIF는 `<img>`로 로드하면 애니메이션 그대로 움직여.
+- 현재 시즌2 구조는 댓글을 열매로 렌더링하므로, 고양이 자산은 사용하지 않는다.
+- 이전 실험용 고양이 파일이 남아 있어도 시즌2 화면에는 영향을 주지 않는다.

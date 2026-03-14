@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="420" viewBox="0 0 320 420" shape-rendering="crispEdges">
+  <defs>
+    <style>
+      .o { fill: #2f254d; }
+      .s1 { fill: #3e3261; }
+      .s2 { fill: #5b4780; }
+      .l1 { fill: #3e8f45; }
+      .l2 { fill: #63b44d; }
+      .l3 { fill: #8fd75f; }
+      .l4 { fill: #b6ea77; }
+      .t1 { fill: #6c4a37; }
+      .t2 { fill: #8c6043; }
+      .t3 { fill: #b07d57; }
+      .t4 { fill: #d2a279; }
+    </style>
+  </defs>
+
+  <!-- back shadow canopy -->
+  <rect class="o" x="80" y="48" width="24" height="12"/>
+  <rect class="o" x="104" y="36" width="96" height="12"/>
+  <rect class="o" x="200" y="48" width="24" height="12"/>
+  <rect class="o" x="60" y="60" width="176" height="12"/>
+  <rect class="o" x="48" y="72" width="200" height="12"/>
+  <rect class="o" x="36" y="84" width="224" height="12"/>
+  <rect class="o" x="24" y="96" width="248" height="12"/>
+  <rect class="o" x="20" y="108" width="256" height="12"/>
+  <rect class="o" x="16" y="120" width="264" height="12"/>
+  <rect class="o" x="24" y="132" width="248" height="12"/>
+  <rect class="o" x="32" y="144" width="232" height="12"/>
+  <rect class="o" x="40" y="156" width="224" height="12"/>
+  <rect class="o" x="52" y="168" width="212" height="12"/>
+  <rect class="o" x="60" y="180" width="204" height="12"/>
+  <rect class="o" x="72" y="192" width="196" height="12"/>
+  <rect class="o" x="84" y="204" width="184" height="12"/>
+  <rect class="o" x="96" y="216" width="164" height="12"/>
+  <rect class="o" x="108" y="228" width="144" height="12"/>
+
+  <!-- canopy shadow -->
+  <rect class="s1" x="72" y="48" width="24" height="12"/>
+  <rect class="s1" x="96" y="36" width="112" height="12"/>
+  <rect class="s1" x="208" y="48" width="24" height="12"/>
+  <rect class="s1" x="52" y="60" width="192" height="12"/>
+  <rect class="s1" x="40" y="72" width="216" height="12"/>
+  <rect class="s1" x="28" y="84" width="240" height="12"/>
+  <rect class="s1" x="20" y="96" width="256" height="12"/>
+  <rect class="s1" x="12" y="108" width="272" height="12"/>
+  <rect class="s1" x="8" y="120" width="280" height="12"/>
+  <rect class="s1" x="16" y="132" width="264" height="12"/>
+  <rect class="s1" x="24" y="144" width="248" height="12"/>
+  <rect class="s1" x="32" y="156" width="240" height="12"/>
+  <rect class="s1" x="44" y="168" width="228" height="12"/>
+  <rect class="s1" x="52" y="180" width="220" height="12"/>
+  <rect class="s1" x="64" y="192" width="208" height="12"/>
+  <rect class="s1" x="76" y="204" width="192" height="12"/>
+  <rect class="s1" x="88" y="216" width="176" height="12"/>
+  <rect class="s1" x="100" y="228" width="156" height="12"/>
+
+  <!-- canopy main -->
+  <rect class="l1" x="88" y="36" width="24" height="12"/>
+  <rect class="l1" x="112" y="24" width="96" height="12"/>
+  <rect class="l1" x="208" y="36" width="24" height="12"/>
+  <rect class="l1" x="60" y="48" width="196" height="12"/>
+  <rect class="l1" x="44" y="60" width="224" height="12"/>
+  <rect class="l1" x="32" y="72" width="248" height="12"/>
+  <rect class="l1" x="20" y="84" width="264" height="12"/>
+  <rect class="l1" x="12" y="96" width="280" height="12"/>
+  <rect class="l1" x="8" y="108" width="288" height="12"/>
+  <rect class="l1" x="12" y="120" width="288" height="12"/>
+  <rect class="l1" x="20" y="132" width="280" height="12"/>
+  <rect class="l1" x="28" y="144" width="272" height="12"/>
+  <rect class="l1" x="40" y="156" width="256" height="12"/>
+  <rect class="l1" x="48" y="168" width="248" height="12"/>
+  <rect class="l1" x="60" y="180" width="232" height="12"/>
+  <rect class="l1" x="72" y="192" width="216" height="12"/>
+  <rect class="l1" x="84" y="204" width="196" height="12"/>
+  <rect class="l1" x="100" y="216" width="168" height="12"/>
+
+  <!-- canopy highlights -->
+  <rect class="l2" x="92" y="48" width="24" height="12"/>
+  <rect class="l2" x="116" y="36" width="72" height="12"/>
+  <rect class="l2" x="196" y="48" width="20" height="12"/>
+  <rect class="l2" x="68" y="60" width="56" height="12"/>
+  <rect class="l2" x="176" y="60" width="64" height="12"/>
+  <rect class="l2" x="44" y="84" width="60" height="12"/>
+  <rect class="l2" x="220" y="84" width="40" height="12"/>
+  <rect class="l2" x="28" y="108" width="52" height="12"/>
+  <rect class="l2" x="116" y="96" width="88" height="12"/>
+  <rect class="l2" x="220" y="120" width="52" height="12"/>
+  <rect class="l2" x="48" y="132" width="76" height="12"/>
+  <rect class="l2" x="168" y="144" width="88" height="12"/>
+  <rect class="l2" x="68" y="168" width="56" height="12"/>
+  <rect class="l2" x="200" y="180" width="48" height="12"/>
+  <rect class="l3" x="120" y="60" width="64" height="12"/>
+  <rect class="l3" x="92" y="84" width="44" height="12"/>
+  <rect class="l3" x="188" y="96" width="44" height="12"/>
+  <rect class="l3" x="84" y="120" width="48" height="12"/>
+  <rect class="l3" x="136" y="132" width="72" height="12"/>
+  <rect class="l3" x="80" y="156" width="40" height="12"/>
+  <rect class="l3" x="180" y="168" width="56" height="12"/>
+  <rect class="l3" x="120" y="180" width="52" height="12"/>
+  <rect class="l4" x="132" y="48" width="40" height="12"/>
+  <rect class="l4" x="144" y="84" width="32" height="12"/>
+  <rect class="l4" x="104" y="108" width="28" height="12"/>
+  <rect class="l4" x="176" y="132" width="28" height="12"/>
+  <rect class="l4" x="124" y="156" width="32" height="12"/>
+
+  <!-- trunk shadow -->
+  <rect class="o" x="128" y="168" width="20" height="24"/>
+  <rect class="o" x="172" y="168" width="20" height="24"/>
+  <rect class="o" x="116" y="192" width="96" height="24"/>
+  <rect class="o" x="112" y="216" width="104" height="24"/>
+  <rect class="o" x="108" y="240" width="108" height="24"/>
+  <rect class="o" x="104" y="264" width="108" height="24"/>
+  <rect class="o" x="96" y="288" width="112" height="24"/>
+  <rect class="o" x="88" y="312" width="120" height="24"/>
+  <rect class="o" x="80" y="336" width="56" height="24"/>
+  <rect class="o" x="176" y="336" width="44" height="24"/>
+  <rect class="o" x="68" y="360" width="48" height="12"/>
+  <rect class="o" x="196" y="360" width="36" height="12"/>
+
+  <!-- trunk -->
+  <rect class="t1" x="132" y="168" width="16" height="24"/>
+  <rect class="t1" x="172" y="168" width="16" height="24"/>
+  <rect class="t1" x="120" y="192" width="88" height="24"/>
+  <rect class="t1" x="116" y="216" width="96" height="24"/>
+  <rect class="t1" x="112" y="240" width="100" height="24"/>
+  <rect class="t1" x="108" y="264" width="100" height="24"/>
+  <rect class="t1" x="104" y="288" width="96" height="24"/>
+  <rect class="t1" x="96" y="312" width="104" height="24"/>
+  <rect class="t1" x="88" y="336" width="44" height="24"/>
+  <rect class="t1" x="164" y="336" width="44" height="24"/>
+  <rect class="t1" x="72" y="360" width="40" height="12"/>
+  <rect class="t1" x="188" y="360" width="36" height="12"/>
+
+  <!-- trunk highlights -->
+  <rect class="t2" x="144" y="192" width="24" height="24"/>
+  <rect class="t2" x="132" y="216" width="52" height="24"/>
+  <rect class="t2" x="128" y="240" width="48" height="24"/>
+  <rect class="t2" x="124" y="264" width="52" height="24"/>
+  <rect class="t2" x="120" y="288" width="48" height="24"/>
+  <rect class="t2" x="112" y="312" width="36" height="24"/>
+  <rect class="t2" x="172" y="312" width="20" height="24"/>
+  <rect class="t3" x="152" y="216" width="16" height="96"/>
+  <rect class="t4" x="156" y="240" width="8" height="48"/>
+</svg>
